@@ -3,11 +3,14 @@
 //
 
 #include "byte_input_stream.h"
+#include "data_utils.h"
 
 ByteInputStream::ByteInputStream(void* bytes, size_t size) {
 	bytes_ = (byte*) bytes;
 	size_ = size;
 	cursor_ = 0;
+
+	DataUtils::print(bytes, size);
 }
 
 bool ByteInputStream::hasMoreBytes() {

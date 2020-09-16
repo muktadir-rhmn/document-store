@@ -47,7 +47,7 @@ private:
 
 	fieldType_t curFieldType_;
 	int curFieldValueSize_;
-	void* curFieldValue_= nullptr;
+	byte* curFieldValue_= nullptr;
 
 	ByteInputStream* lastByteInputStream_ = nullptr;
 	DRDocumentReader* lastDocumentValue_ = nullptr;

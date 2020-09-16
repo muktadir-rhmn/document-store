@@ -14,7 +14,7 @@ CollectionImp::CollectionImp(WT_CURSOR *cursor) {
     fieldNameIDMap_ = new FieldNameIDMap();
 	fieldNameIDMap_->putPair("name", 0);
 	fieldNameIDMap_->putPair("address", 1);
-//	fieldNameIDMap_->putPair("last_login", 2);
+	fieldNameIDMap_->putPair("last_login", 2);
 //	fieldNameIDMap_->putPair("propic", 3);
 }
 

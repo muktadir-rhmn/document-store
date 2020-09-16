@@ -21,7 +21,7 @@ public:
 
 	void appendCString(void* fieldId, ccstring value, stringSize_t strSize=-1) override;
 
-	void appendDocument(void* fieldId, DocumentReader* value) override;
+	void appendDocument(void* fieldId, DocumentWriter& value) override;
 
 	AllocatableOutputStream* getOutputStream() override;
 

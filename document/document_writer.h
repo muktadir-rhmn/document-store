@@ -16,7 +16,7 @@ public:
 	virtual void appendInt32(void* fieldId, int32 value)=0;
 	virtual void appendInt64(void* fieldId, int64 value)=0;
 	virtual void appendCString(void* fieldId, ccstring value, stringSize_t strSize=-1)=0;
-	virtual void appendDocument(void* fieldId, DocumentReader* value)=0;
+	virtual void appendDocument(void* fieldId, DocumentWriter& value)=0;
 	virtual AllocatableOutputStream* getOutputStream()=0;
 };
 

@@ -47,10 +47,13 @@ void DRDocumentWriter::appendCString(void* fieldId, ccstring value, stringSize_t
 	outputStream_->appendBytes(value, strSize); ///no null character
 }
 
-void DRDocumentWriter::appendDocument(void* fieldId, DocumentReader* embeddedDoc) {
+void DRDocumentWriter::appendDocument(void* fieldId, DocumentWriter& embeddedDoc) {
 	appendFieldId(fieldId);
 
-	///todo: get just bytes of the document and append them
+	outputStream_->appendBytes(&FieldType.DOCUMENT, sizeof(fieldType_t));
+	AllocatableOutputStream* outputStream = embeddedDoc.getOutputStream();
+	RawData rawData = outputStream->getRawData();
+	outputStream_->appendBytes(rawData.bytes, rawData.size);
 }
 
 AllocatableOutputStream* DRDocumentWriter::getOutputStream() {

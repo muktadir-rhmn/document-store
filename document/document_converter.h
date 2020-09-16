@@ -12,12 +12,12 @@
 #include "dr/dr_document_writer.h"
 #include "dr/dr_document_reader.h"
 
-using document::dr::DRDocumentReader;
+using document::DocumentReader;
 using document::dr::DRDocumentWriter;
 
 class DocumentConverter {
 public:
-	static DRDocumentWriter replaceFieldNamesWithIds(DRDocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap);
+	static DRDocumentWriter replaceFieldNamesWithIds(DocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap);
 
 };
 

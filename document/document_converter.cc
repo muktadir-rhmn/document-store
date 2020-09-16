@@ -8,7 +8,7 @@
 
 using document::FieldType;
 
-DRDocumentWriter DocumentConverter::replaceFieldNamesWithIds(DRDocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap) {
+DRDocumentWriter DocumentConverter::replaceFieldNamesWithIds(DocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap) {
 	DRDocumentWriter writer;
 
 	while (documentReader.hasNext()) {
@@ -32,7 +32,9 @@ DRDocumentWriter DocumentConverter::replaceFieldNamesWithIds(DRDocumentReader& d
 		} else if (fieldType == FieldType.DOCUMENT) {
 			DEBUG_MSG("\n\tfield value: <Document> ");
 
-			writer.appendDocument(&fieldId, documentReader.valueAsDocument());
+			DocumentReader* embeddedDocReader = documentReader.valueAsDocument();
+			DRDocumentWriter embeddedDocWriter = replaceFieldNamesWithIds(*embeddedDocReader, fieldNameIdMap);
+			writer.appendDocument(&fieldId, embeddedDocWriter);
 		}
 
 		documentReader.next();

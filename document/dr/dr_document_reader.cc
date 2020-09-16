@@ -21,12 +21,12 @@ bool DRDocumentReader::hasNext() {
 
 void DRDocumentReader::next() {
 	if (!hasNext()) throw InternalException("Call to DocumentReader::next() after reaching the end of the document");
-	if (nBytesRead_ == documentSize_) {
+	if (nBytesRead_ >= documentSize_) {
 		readingFinished_ = true;
 		return;
 	}
-
 	loadNextField();
+
 }
 
 ccstring DRDocumentReader::fieldIdAsCString() {
@@ -51,8 +51,9 @@ int64 DRDocumentReader::valueAsInt64() {
 
 String DRDocumentReader::valueAsString() {
 	String val;
-	for (int i = 0; i < curFieldValueSize_; ++i) {
-		val += ((char *) curFieldValue_) [i];
+	stringSize_t size = *(stringSize_t*) curFieldValue_;
+	for (int i = 0; i < size; ++i) {
+		val += ((char *) curFieldValue_) [i + sizeof(stringSize_t)];
 	}
 	return val;
 }
@@ -82,26 +83,40 @@ void DRDocumentReader::loadNextFieldId() {
 }
 
 void DRDocumentReader::loadNextFieldValue() {
+	delete[] (char*) curFieldValue_;
+
 	curFieldType_ = inputStream_->nextByte();
 	nBytesRead_ += 1;
 
 	if (curFieldType_ == FieldType.INT64) {
 		curFieldValueSize_ = sizeof(int64);
+
+		curFieldValue_ = new byte[curFieldValueSize_];
+		inputStream_->nextBytes(curFieldValue_, curFieldValueSize_);
+		nBytesRead_ += curFieldValueSize_;
 	} else if (curFieldType_ == FieldType.STRING) {
 		curFieldValueSize_ = inputStream_->nextInt32();
-		nBytesRead_ += sizeof(int32);
+		nBytesRead_+=sizeof(int32);
+
+		curFieldValue_ = new byte[curFieldValueSize_];
+		*(int32*) curFieldValue_ = curFieldValueSize_;
+		inputStream_->nextBytes(curFieldValue_ + sizeof(stringSize_t), curFieldValueSize_);
+		nBytesRead_ += curFieldValueSize_;
 	} else if (curFieldType_ == FieldType.DOCUMENT) {
 		curFieldValueSize_ = inputStream_->nextInt32();
-		nBytesRead_ += sizeof(int32);
+
+		curFieldValue_ = new byte[curFieldValueSize_];
+		*(int32*) curFieldValue_ = curFieldValueSize_;
+		inputStream_->nextBytes(curFieldValue_ + sizeof(docSize_t), curFieldValueSize_);
+		nBytesRead_ += curFieldValueSize_;
 	} else if (curFieldType_ == FieldType.ARRAY) {
 		curFieldValueSize_ = inputStream_->nextInt32();
-		nBytesRead_ += sizeof(int32);
-	}
 
-	delete[] (char*) curFieldValue_;
-	curFieldValue_ = new char[curFieldValueSize_];
-	inputStream_->nextBytes(curFieldValue_, curFieldValueSize_);
-	nBytesRead_ += curFieldValueSize_;
+		curFieldValue_ = new byte [curFieldValueSize_];
+		*(int32*) curFieldValue_ = curFieldValueSize_;
+		inputStream_->nextBytes(curFieldValue_ + sizeof(arraySize_t), curFieldValueSize_);
+		nBytesRead_ += curFieldValueSize_;
+	}
 }
 
 DRDocumentReader::~DRDocumentReader() {
