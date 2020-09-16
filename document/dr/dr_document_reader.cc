@@ -9,8 +9,8 @@ DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType) {
 	curFieldIdType_ = fieldIdType;
 	readingFinished_ = false;
 
-	documentSize_ = inputStream_->nextInt32();
-	nBytesRead_ = sizeof(int32);
+	inputStream_->nextBytes(&documentSize_, sizeof(docSize_t));
+	nBytesRead_ = sizeof(docSize_t);
 
 	loadNextField();
 }
