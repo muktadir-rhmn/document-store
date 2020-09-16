@@ -21,10 +21,13 @@ bool DRDocumentReader::hasNext() {
 
 void DRDocumentReader::next() {
 	if (!hasNext()) throw InternalException("Call to DocumentReader::next() after reaching the end of the document");
+
 	if (nBytesRead_ >= documentSize_) {
+		if (nBytesRead_ > documentSize_) throw InternalException("nBytesRead_ > documentSize_ :: There is some bug in DRDocumentReader");
 		readingFinished_ = true;
 		return;
 	}
+
 	loadNextField();
 
 }
