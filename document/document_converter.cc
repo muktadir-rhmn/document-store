@@ -9,7 +9,7 @@
 using document::FieldType;
 
 DRDocumentWriter DocumentConverter::replaceFieldNamesWithIds(DocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap) {
-	DRDocumentWriter writer;
+	DRDocumentWriter writer; //todo: for each embedded document, a new output stream is created, which is not necessary
 
 	while (documentReader.hasNext()) {
 		String fieldName = documentReader.fieldIdAsCString();

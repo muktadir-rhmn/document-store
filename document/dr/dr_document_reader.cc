@@ -79,6 +79,7 @@ void DRDocumentReader::loadNextFieldId() {
 		nBytesRead_ += curFieldName_.size() + 1;
 	} else {
 		curFieldId_ = inputStream_->nextInt16();
+		nBytesRead_ += sizeof(int16);
 	}
 }
 
@@ -95,25 +96,31 @@ void DRDocumentReader::loadNextFieldValue() {
 		inputStream_->nextBytes(curFieldValue_, curFieldValueSize_);
 		nBytesRead_ += curFieldValueSize_;
 	} else if (curFieldType_ == FieldType.STRING) {
-		curFieldValueSize_ = inputStream_->nextInt32();
-		nBytesRead_+=sizeof(int32);
+		stringSize_t size;
+		inputStream_->nextBytes(&size, sizeof(stringSize_t));
+		nBytesRead_ += sizeof(stringSize_t);
+		curFieldValueSize_ = size;
 
 		curFieldValue_ = new byte[curFieldValueSize_];
-		*(int32*) curFieldValue_ = curFieldValueSize_;
+		*(stringSize_t *) curFieldValue_ = curFieldValueSize_;
 		inputStream_->nextBytes(curFieldValue_ + sizeof(stringSize_t), curFieldValueSize_);
 		nBytesRead_ += curFieldValueSize_;
 	} else if (curFieldType_ == FieldType.DOCUMENT) {
-		curFieldValueSize_ = inputStream_->nextInt32();
+		docSize_t size;
+		inputStream_->nextBytes(&size, sizeof(docSize_t));
+		curFieldValueSize_ = size;
 
 		curFieldValue_ = new byte[curFieldValueSize_];
-		*(int32*) curFieldValue_ = curFieldValueSize_;
+		*(docSize_t *) curFieldValue_ = curFieldValueSize_;
 		inputStream_->nextBytes(curFieldValue_ + sizeof(docSize_t), curFieldValueSize_);
 		nBytesRead_ += curFieldValueSize_;
 	} else if (curFieldType_ == FieldType.ARRAY) {
-		curFieldValueSize_ = inputStream_->nextInt32();
+		arraySize_t size;
+		inputStream_->nextBytes(&size, sizeof(arraySize_t));
+		curFieldValueSize_ = size;
 
 		curFieldValue_ = new byte [curFieldValueSize_];
-		*(int32*) curFieldValue_ = curFieldValueSize_;
+		*(arraySize_t *) curFieldValue_ = curFieldValueSize_;
 		inputStream_->nextBytes(curFieldValue_ + sizeof(arraySize_t), curFieldValueSize_);
 		nBytesRead_ += curFieldValueSize_;
 	}
