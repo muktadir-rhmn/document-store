@@ -5,18 +5,24 @@
 #include "byte_input_stream.h"
 #include "data_utils.h"
 
-ByteInputStream::ByteInputStream(void* bytes, size_t size) {
+ByteInputStream::ByteInputStream(void* bytes, size_t size, bool destroyBytes) {
 	bytes_ = (byte*) bytes;
 	size_ = size;
 	cursor_ = 0;
+	destroyBytes_ = destroyBytes;
 
 	DataUtils::print(bytes, size);
 }
 
-ByteInputStream::ByteInputStream(RawData rawData) {
+ByteInputStream::ByteInputStream(RawData rawData, bool destroyBytes) {
 	bytes_ = rawData.bytes;
 	size_ = rawData.size;
 	cursor_ = 0;
+	destroyBytes_ = destroyBytes;
+}
+
+ByteInputStream::~ByteInputStream() {
+	if (destroyBytes_) delete [] bytes_;
 }
 
 bool ByteInputStream::hasMoreBytes() {

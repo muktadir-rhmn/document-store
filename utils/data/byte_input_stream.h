@@ -12,8 +12,9 @@
 
 class ByteInputStream : public InputStream {
 public:
-    explicit ByteInputStream(void* bytes, size_t size);
-	explicit ByteInputStream(RawData data);
+    explicit ByteInputStream(void* bytes, size_t size, bool destroyBytes=false);
+	explicit ByteInputStream(RawData data, bool destroyBytes=false);
+	~ByteInputStream();
 
 	void nextBytes(void* buffer, size_t nBytesToRead) override;
 	byte* nextBytes(size_t nBytesToRead);
@@ -25,6 +26,7 @@ public:
 	void skip(size_t bytes) override;
 
 private:
+	bool destroyBytes_;
 	byte* bytes_;
     size_t cursor_;
     size_t size_;

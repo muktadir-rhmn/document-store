@@ -33,7 +33,6 @@ public:
 	DocumentReader* curValueAsDocument() override;
 
 private:
-	RawData documentRawData_;
 	ByteInputStream inputStream_;
 	docSize_t documentSize_;
 	docSize_t nBytesRead_;

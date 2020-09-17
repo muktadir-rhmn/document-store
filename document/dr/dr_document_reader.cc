@@ -5,31 +5,31 @@
 namespace document { namespace dr {
 
 DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType)
-: inputStream_(extractRawData(inputStream)) {
+: inputStream_(extractRawData(inputStream), true) {
 	curFieldIdType_ = fieldIdType;
 }
 
 DRDocumentReader::DRDocumentReader(ByteInputStream inputStream, int fieldIdType) : inputStream_(inputStream) {
 	curFieldIdType_ = fieldIdType;
+	destroyDocumentRawData_ = false;
 }
 
 RawData DRDocumentReader::extractRawData(InputStream* inputStream) {
 	inputStream->nextBytes(&documentSize_, sizeof(docSize_t));
 	nBytesRead_ = sizeof(docSize_t);
 
-	documentRawData_.size = documentSize_;
-	documentRawData_.bytes = new byte[documentSize_];
+	RawData rawData;
+	rawData.size = documentSize_;
+	rawData.bytes = new byte[documentSize_];
 
-	*(docSize_t*) documentRawData_.bytes = documentSize_;
+	*(docSize_t*) rawData.bytes = documentSize_;
 
-	inputStream->nextBytes(documentRawData_.bytes + sizeof(docSize_t), documentSize_ - sizeof(docSize_t));
+	inputStream->nextBytes(rawData.bytes + sizeof(docSize_t), documentSize_ - sizeof(docSize_t));
 
-	return documentRawData_;
+	return rawData;
 }
 
 DRDocumentReader::~DRDocumentReader() {
-	delete[] documentRawData_.bytes;
-
 	delete lastDocumentValue_;
 }
 
