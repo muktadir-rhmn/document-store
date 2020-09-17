@@ -14,8 +14,8 @@ namespace document { namespace  dr {
 
 class DRDocumentReader : public document::DocumentReader {
 public:
-	explicit DRDocumentReader(InputStream* inputStream, int fieldIdType = 0);
-	explicit DRDocumentReader(ByteInputStream inputStream, int fieldIdType = 0);
+	explicit DRDocumentReader(InputStream* inputStream, int fieldIdType = -1);
+	explicit DRDocumentReader(ByteInputStream inputStream, int fieldIdType = -1);
 	~DRDocumentReader() override;
 
 	bool next() override;

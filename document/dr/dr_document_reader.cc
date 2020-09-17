@@ -1,5 +1,6 @@
 
 #include "dr_document_reader.h"
+#include "../../utils/debug/debug.h"
 
 
 namespace document { namespace dr {
@@ -7,15 +8,18 @@ namespace document { namespace dr {
 DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType)
 : inputStream_(extractRawData(inputStream), true) {
 	curFieldIdType_ = fieldIdType;
+	inputStream_.nextBytes(&documentSize_, sizeof(docSize_t));
+	nBytesRead_ = sizeof(docSize_t);
 }
 
 DRDocumentReader::DRDocumentReader(ByteInputStream inputStream, int fieldIdType) : inputStream_(inputStream) {
 	curFieldIdType_ = fieldIdType;
+	inputStream_.nextBytes(&documentSize_, sizeof(docSize_t));
+	nBytesRead_ = sizeof(docSize_t);
 }
 
 RawData DRDocumentReader::extractRawData(InputStream* inputStream) {
 	inputStream->nextBytes(&documentSize_, sizeof(docSize_t));
-	nBytesRead_ = sizeof(docSize_t);
 
 	RawData rawData;
 	rawData.size = documentSize_;
@@ -34,7 +38,7 @@ DRDocumentReader::~DRDocumentReader() {
 
 bool DRDocumentReader::next() {
 	if (nBytesRead_ >= documentSize_) {
-		if (nBytesRead_ > documentSize_) throw InternalException("nBytesRead_ > documentSize_ :: There is some bug in DRDocumentReader");
+		ASSERT(nBytesRead_ == documentSize_, "nBytesRead_ > documentSize_ :: There is some bug in DRDocumentReader");
 		return false;
 	}
 
@@ -70,7 +74,7 @@ String DRDocumentReader::curValueAsString() {
 DocumentReader* DRDocumentReader::curValueAsDocument() {
 	delete lastDocumentValue_;
 
-	lastDocumentValue_ = new DRDocumentReader(ByteInputStream(curFieldValue_));
+	lastDocumentValue_ = new DRDocumentReader(ByteInputStream(curFieldValue_), curFieldIdType_);
 	return lastDocumentValue_;
 }
 

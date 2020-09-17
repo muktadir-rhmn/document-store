@@ -14,7 +14,7 @@ using document::dr::DRDocumentWriter;
 void CollectionProcessor::processInsertDocument(Database* database, ConnectionDescriptor *conDescriptor) {
     Collection* collection = CollectionProcessor::retrieveCollection(database, conDescriptor);
 
-    DRDocumentReader reader(conDescriptor->getInputStream());
+    DRDocumentReader reader(conDescriptor->getInputStream(), 0);
     DRDocumentWriter doc = DocumentConverter::replaceFieldNamesWithIds(reader, collection->getFieldNameIdMap());
 	AllocatableOutputStream* outputStream = doc.getOutputStream();
 	RawData rawData = outputStream->getRawData();

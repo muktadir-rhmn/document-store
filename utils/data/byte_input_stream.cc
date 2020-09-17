@@ -19,6 +19,7 @@ ByteInputStream::ByteInputStream(RawData rawData, bool destroyBytes) {
 	size_ = rawData.size;
 	cursor_ = 0;
 	destroyBytes_ = destroyBytes;
+	DataUtils::print(bytes_, size_);
 }
 
 ByteInputStream::~ByteInputStream() {
