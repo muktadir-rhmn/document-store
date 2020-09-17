@@ -11,7 +11,6 @@ DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType)
 
 DRDocumentReader::DRDocumentReader(ByteInputStream inputStream, int fieldIdType) : inputStream_(inputStream) {
 	curFieldIdType_ = fieldIdType;
-	destroyDocumentRawData_ = false;
 }
 
 RawData DRDocumentReader::extractRawData(InputStream* inputStream) {
