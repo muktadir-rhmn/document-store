@@ -16,9 +16,6 @@ public:
 	explicit ByteOutputStream(size_t initialCapacity);
 	~ByteOutputStream() override;
 
-	byte* bytes() {return bytes_;}
-	size_t size() const {return size_;}
-
 	void appendBytes(const void* value, size_t size) override;
 
 	int allocate(size_t nBytes) override;

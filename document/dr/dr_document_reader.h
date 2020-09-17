@@ -47,7 +47,7 @@ private:
 
 	fieldType_t curFieldType_;
 	int curFieldValueSize_;
-	byte* curFieldValue_= nullptr;
+	byte* curFieldValue_= nullptr; //todo: now current field is copied and stored in this buffer. But I can improve its performance by removing this buffer and directly returning data from the stream
 
 	ByteInputStream* lastByteInputStream_ = nullptr;
 	DRDocumentReader* lastDocumentValue_ = nullptr;
