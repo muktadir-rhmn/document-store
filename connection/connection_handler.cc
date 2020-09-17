@@ -5,7 +5,7 @@
 #include <iostream>
 #include "../utils/socket/client_socket.h"
 #include "connection_manager.h"
-#include "../utils/logger/logger.h"
+#include "../utils/debug/debug.h"
 #include "../utils/exceptions/exception.h"
 #include "../utils/socket/buffered_input_stream.h"
 #include "../utils/socket/buffered_output_stream.h"

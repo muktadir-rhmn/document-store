@@ -4,7 +4,7 @@
 
 #include "user_manager.h"
 #include "../utils/exceptions/exception.h"
-#include "../utils/logger/logger.h"
+#include "../utils/debug/debug.h"
 
 UserManager* UserManager::instance_ = new UserManager();
 

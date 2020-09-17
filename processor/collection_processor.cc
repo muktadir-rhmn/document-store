@@ -4,7 +4,7 @@
 
 #include "collection_processor.h"
 #include "../document/document_converter.h"
-#include "../utils/logger/logger.h"
+#include "../utils/debug/debug.h"
 #include "request_response_constants.h"
 #include "../utils/data/data_utils.h"
 

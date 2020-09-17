@@ -3,7 +3,7 @@
 //
 
 #include "collection_imp.h"
-#include "../../utils/logger/logger.h"
+#include "../../utils/debug/debug.h"
 
 int CollectionImp::id = 1;
 

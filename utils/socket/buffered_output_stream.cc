@@ -8,9 +8,9 @@ BufferedSocketOutputStream::BufferedSocketOutputStream(ClientSocket* clientSocke
     clientSocket_ = clientSocket;
 }
 
-void BufferedSocketOutputStream::appendBytes(const void* value, size_t size) {
+int BufferedSocketOutputStream::appendBytes(const void* value, size_t size) {
 	//todo: buffer_ the write
-	clientSocket_->writeData(value, size);
+	return clientSocket_->writeData(value, size);
 }
 
 void BufferedSocketOutputStream::flush() {

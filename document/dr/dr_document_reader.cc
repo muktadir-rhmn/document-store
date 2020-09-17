@@ -7,52 +7,38 @@ namespace document { namespace dr {
 DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType) {
 	inputStream_ = inputStream;
 	curFieldIdType_ = fieldIdType;
-	readingFinished_ = false;
 
 	inputStream_->nextBytes(&documentSize_, sizeof(docSize_t));
 	nBytesRead_ = sizeof(docSize_t);
-
-	loadNextField();
 }
 
-bool DRDocumentReader::hasNext() {
-	return !readingFinished_;
-}
-
-void DRDocumentReader::next() {
-	if (!hasNext()) throw InternalException("Call to DocumentReader::next() after reaching the end of the document");
-
+bool DRDocumentReader::next() {
 	if (nBytesRead_ >= documentSize_) {
 		if (nBytesRead_ > documentSize_) throw InternalException("nBytesRead_ > documentSize_ :: There is some bug in DRDocumentReader");
-		readingFinished_ = true;
-		return;
+		return false;
 	}
 
 	loadNextField();
-
+	return true;
 }
 
-ccstring DRDocumentReader::fieldIdAsCString() {
+ccstring DRDocumentReader::curFieldIdAsCString() {
 	return curFieldName_.c_str();
 }
 
-fieldId_t DRDocumentReader::fieldIdAsInt() {
+fieldId_t DRDocumentReader::curFieldIdAsInt() {
 	return curFieldId_;
 }
 
-fieldType_t DRDocumentReader::fieldType() {
+fieldType_t DRDocumentReader::curFieldType() {
 	return curFieldType_;
 }
 
-int32 DRDocumentReader::valueAsInt32() {
-	return *(int32*) curFieldValue_;
-}
-
-int64 DRDocumentReader::valueAsInt64() {
+int64 DRDocumentReader::curValueAsInt64() {
 	return *(int64*) curFieldValue_;
 }
 
-String DRDocumentReader::valueAsString() {
+String DRDocumentReader::curValueAsString() {
 	String val;
 	stringSize_t size = *(stringSize_t*) curFieldValue_;
 	for (int i = 0; i < size; ++i) {
@@ -61,7 +47,7 @@ String DRDocumentReader::valueAsString() {
 	return val;
 }
 
-DocumentReader* DRDocumentReader::valueAsDocument() {
+DocumentReader* DRDocumentReader::curValueAsDocument() {
 	delete lastByteInputStream_;
 	delete lastDocumentValue_;
 
@@ -136,4 +122,3 @@ DRDocumentReader::~DRDocumentReader() {
 }
 
 }}
-

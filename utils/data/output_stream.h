@@ -12,38 +12,38 @@
 
 class OutputStream {
 public:
-	virtual void appendBytes(const void* bytes, size_t size)=0;
+	virtual int appendBytes(const void* bytes, size_t size)=0;
 	virtual void flush() {}
 
-	void appendByte(byte n){
-		appendBytes((byte*) &n, sizeof n);
+	int appendByte(byte n){
+		return appendBytes((byte*) &n, sizeof n);
 	}
 
-	void appendInt16(int16 n){
-		appendBytes((byte*) &n, sizeof n);
+	int appendInt16(int16 n){
+		return appendBytes((byte*) &n, sizeof n);
 	}
 
-	void appendInt32(int32 n){
-		appendBytes((const void*) &n, sizeof n);
+	int appendInt32(int32 n){
+		return appendBytes((const void*) &n, sizeof n);
 	}
 
-	void appendInt64(int64 n){
-		appendBytes((byte*) &n, sizeof n);
+	int appendInt64(int64 n){
+		return appendBytes((byte*) &n, sizeof n);
 	}
 
-	void appendFloat32(float32 n){
-		appendBytes((byte*) &n, sizeof n);
+	int appendFloat32(float32 n){
+		return appendBytes((byte*) &n, sizeof n);
 	}
 
-	void appendFloat64(float64 n){
-		appendBytes((byte*) &n, sizeof n);
+	int appendFloat64(float64 n){
+		return appendBytes((byte*) &n, sizeof n);
 	}
 
-	void appendCString(ccstring s, int size= -1){
+	int appendCString(ccstring s, int size= -1){
 		size = strlen(s);
 		size += 1;//1 for the null character
 
-		appendBytes((byte*) s, size);
+		return appendBytes((byte*) s, size);
 	}
 };
 

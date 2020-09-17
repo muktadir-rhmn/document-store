@@ -10,30 +10,23 @@
 #include "document_typedefs.h"
 
 namespace document {
-typedef int16 fieldType;
-typedef int16 fieldId;
 
 class DocumentReader {
 public:
 	virtual ~DocumentReader() = default;
 
 	/** cursor movement interface*/
-	virtual bool hasNext()=0;
-
-	virtual void next()=0;
+	virtual bool next()=0; ///moves cursor to the next position and returns false if there is no next field.
 
 	/** reader interface */
-	virtual ccstring fieldIdAsCString()=0;
-	virtual fieldId_t fieldIdAsInt()=0;
+	virtual ccstring curFieldIdAsCString()=0;
+	virtual fieldId_t curFieldIdAsInt()=0;
 
-	virtual document::fieldType_t fieldType()=0;
+	virtual fieldType_t curFieldType()=0;
 
-	virtual int32 valueAsInt32()=0;
-	virtual int64 valueAsInt64()=0;
-	virtual String valueAsString()=0;
-	virtual DocumentReader* valueAsDocument()=0;
-
-//	virtual ArrayReader getCurArray()=0;
+	virtual int64 curValueAsInt64()=0;
+	virtual String curValueAsString()=0;
+	virtual DocumentReader* curValueAsDocument()=0;
 
 };
 

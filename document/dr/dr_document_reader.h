@@ -17,29 +17,24 @@ public:
 	explicit DRDocumentReader(InputStream* inputStream, int fieldIdType = 0);
 	~DRDocumentReader() override;
 
-	bool hasNext() override;
+	bool next() override;
 
-	void next() override;
+	ccstring curFieldIdAsCString() override;
 
-	ccstring fieldIdAsCString() override;
+	fieldType_t curFieldType() override;
 
-	document::fieldType_t fieldType() override;
+	fieldId_t curFieldIdAsInt() override;
 
-	fieldId_t fieldIdAsInt() override;
+	int64 curValueAsInt64() override;
 
-	int32 valueAsInt32() override;
+	String curValueAsString() override;
 
-	int64 valueAsInt64() override;
-
-	String valueAsString() override;
-
-	DocumentReader* valueAsDocument() override;
+	DocumentReader* curValueAsDocument() override;
 
 private:
 	InputStream* inputStream_;
 	docSize_t documentSize_;
 	docSize_t nBytesRead_;
-	bool readingFinished_;
 
 	int curFieldIdType_;
 	String curFieldName_;

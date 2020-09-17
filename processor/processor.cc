@@ -2,7 +2,7 @@
 // Created by Muktadir Rahman on 6/9/20.
 //
 
-#include "../utils/logger/logger.h"
+#include "../utils/debug/debug.h"
 #include "processor.h"
 #include "../utils/exceptions/exception.h"
 #include "database_processor.h"

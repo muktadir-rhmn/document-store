@@ -3,7 +3,7 @@
 //
 
 #include "field_name_id_map.h"
-#include "../utils/logger/logger.h"
+#include "../utils/debug/debug.h"
 
 int FieldNameIDMap::getFieldId(String fieldName) {
     //todo: add to the map if not found

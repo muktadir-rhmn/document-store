@@ -1,7 +1,7 @@
 //
 // Created by Muktadir Rahman on 14/9/20.
 //
-#include "../../utils/logger/logger.h"
+#include "../../utils/debug/debug.h"
 #include "byte_output_stream.h"
 
 ByteOutputStream::ByteOutputStream() {
@@ -23,7 +23,7 @@ void ByteOutputStream::initWithCapacity(size_t cap) {
 	bytes_ = new byte[cap_];
 }
 
-void ByteOutputStream::appendBytes(const void* value, size_t size) {
+int ByteOutputStream::appendBytes(const void* value, size_t size) {
 	ensureSpace(size);
 
 	byte* t = (byte*) value;
@@ -32,6 +32,7 @@ void ByteOutputStream::appendBytes(const void* value, size_t size) {
 		size_++;
 		t++;
 	}
+	return size;
 }
 
 int ByteOutputStream::allocate(size_t nBytes) {

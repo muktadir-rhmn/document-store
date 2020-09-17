@@ -6,12 +6,18 @@
 #define DOCUMENT_STORE_ARRAY_WRITER_H
 
 #include "../utils/data/allocatable_output_stream.h"
+#include "document_typedefs.h"
+
+namespace document{
 
 class ArrayWriter {
 public:
-	virtual void append(int16 element)=0;
-	virtual void append(String element)=0;
+	virtual void appendInt64(int64 element)=0;
+	virtual void appendCString(ccstring element, stringSize_t size)=0;
+	virtual void appendCString(ccstring element)=0;
+
+	virtual AllocatableOutputStream* getOutputStream()=0;
 };
 
-
+}
 #endif //DOCUMENT_STORE_ARRAY_WRITER_H

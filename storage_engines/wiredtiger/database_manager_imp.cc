@@ -6,7 +6,7 @@
 #include "database_manager_imp.h"
 #include "database_imp.h"
 #include "../../utils/exceptions/exception.h"
-#include "../../utils/logger/logger.h"
+#include "../../utils/debug/debug.h"
 
 namespace storageengine { namespace wiredtiger{
 

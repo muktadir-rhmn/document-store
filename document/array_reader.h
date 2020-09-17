@@ -6,26 +6,21 @@
 #define DOCUMENT_STORE_ARRAY_READER_H
 
 #include "../utils/data/input_stream.h"
+#include "document_typedefs.h"
+
+namespace document{
 
 class ArrayReader {
 public:
-	///reader cursor movement logic
-	virtual bool hasNext()=0;
-
-	virtual void next()=0;
+	virtual bool next()=0; ///moves the cursor to the next position and return false if there is no element available to read
 
 	///current cursor reading logic
-	virtual int16 curFieldType()=0;
+	virtual fieldType_t curElementType()=0;
 
-	virtual byte getCurByte()=0;
-
-	virtual int16 getCurInt16()=0;
-
-	virtual String getCurString()=0;
-
-	virtual ArrayReader* getCurArray()=0;
-
+	virtual int64 curValueAsInt64()=0;
+	virtual String curValueAsString()=0;
 };
 
+}
 
 #endif //DOCUMENT_STORE_ARRAY_READER_H

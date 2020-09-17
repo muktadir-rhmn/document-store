@@ -3,7 +3,7 @@
 //
 #include "database_processor.h"
 
-#include "../utils/logger/logger.h"
+#include "../utils/debug/debug.h"
 
 
 void DatabaseProcessor::processCreateCollection(Database *database, ConnectionDescriptor *conDescriptor) {

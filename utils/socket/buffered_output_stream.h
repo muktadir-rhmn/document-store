@@ -13,7 +13,7 @@ class BufferedSocketOutputStream : public OutputStream {
 public:
     explicit BufferedSocketOutputStream(ClientSocket* clientSocket);
 
-	void appendBytes(const void* value, size_t size) override;
+	int appendBytes(const void* value, size_t size) override;
 	void flush() override;
 
 private:
