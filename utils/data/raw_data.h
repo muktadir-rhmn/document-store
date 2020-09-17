@@ -8,7 +8,7 @@
 #include "../../typedefs.h"
 
 struct RawData {
-	void* bytes;
+	byte* bytes;
 	size_t size;
 };
 #endif //DOCUMENT_STORE_RAW_DATA_H

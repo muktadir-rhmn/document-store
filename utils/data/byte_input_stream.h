@@ -10,11 +10,15 @@
 #include "input_stream.h"
 #include "allocatable_output_stream.h"
 
-class ByteInputStream :public InputStream {
+class ByteInputStream : public InputStream {
 public:
     explicit ByteInputStream(void* bytes, size_t size);
+	explicit ByteInputStream(RawData data);
 
 	void nextBytes(void* buffer, size_t nBytesToRead) override;
+	byte* nextBytes(size_t nBytesToRead);
+
+	void peekBytes(void* buffer, size_t nBytesToRead);
 
 	bool hasMoreBytes() override;
 

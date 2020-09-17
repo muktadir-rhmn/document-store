@@ -13,11 +13,22 @@ ByteInputStream::ByteInputStream(void* bytes, size_t size) {
 	DataUtils::print(bytes, size);
 }
 
+ByteInputStream::ByteInputStream(RawData rawData) {
+	bytes_ = rawData.bytes;
+	size_ = rawData.size;
+	cursor_ = 0;
+}
+
 bool ByteInputStream::hasMoreBytes() {
 	return cursor_ < size_;
 }
 
 void ByteInputStream::nextBytes(void* buffer, size_t nBytesToRead) {
+	peekBytes(buffer, nBytesToRead);
+	cursor_ += nBytesToRead;
+}
+
+void ByteInputStream::peekBytes(void* buffer, size_t nBytesToRead) {
 	if (cursor_ >= size_) throw InternalException("No more data to read");
 
 	char* buff = (char*) buffer;
@@ -27,12 +38,19 @@ void ByteInputStream::nextBytes(void* buffer, size_t nBytesToRead) {
 		throw Exception("Not enough data available");
 	}
 
+	int t = cursor_;
 	for (int i = 0; i < nBytesToRead; ++i) {
-		buff[i] = bytes_[cursor_++];
+		buff[i] = bytes_[t++];
 	}
 }
 
 void ByteInputStream::skip(size_t bytes) {
 	cursor_ += bytes;
+}
+
+byte* ByteInputStream::nextBytes(size_t nBytesToRead) {
+	byte* t = &bytes_[cursor_];
+	cursor_ += nBytesToRead;
+	return t;
 }
 

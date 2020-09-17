@@ -4,12 +4,33 @@
 
 namespace document { namespace dr {
 
-DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType) {
-	inputStream_ = inputStream;
+DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType)
+: inputStream_(extractRawData(inputStream)) {
 	curFieldIdType_ = fieldIdType;
+}
 
-	inputStream_->nextBytes(&documentSize_, sizeof(docSize_t));
+DRDocumentReader::DRDocumentReader(ByteInputStream inputStream, int fieldIdType) : inputStream_(inputStream) {
+	curFieldIdType_ = fieldIdType;
+}
+
+RawData DRDocumentReader::extractRawData(InputStream* inputStream) {
+	inputStream->nextBytes(&documentSize_, sizeof(docSize_t));
 	nBytesRead_ = sizeof(docSize_t);
+
+	documentRawData_.size = documentSize_;
+	documentRawData_.bytes = new byte[documentSize_];
+
+	*(docSize_t*) documentRawData_.bytes = documentSize_;
+
+	inputStream->nextBytes(documentRawData_.bytes + sizeof(docSize_t), documentSize_ - sizeof(docSize_t));
+
+	return documentRawData_;
+}
+
+DRDocumentReader::~DRDocumentReader() {
+	delete[] documentRawData_.bytes;
+
+	delete lastDocumentValue_;
 }
 
 bool DRDocumentReader::next() {
@@ -35,24 +56,22 @@ fieldType_t DRDocumentReader::curFieldType() {
 }
 
 int64 DRDocumentReader::curValueAsInt64() {
-	return *(int64*) curFieldValue_;
+	return *(int64*) curFieldValue_.bytes;
 }
 
 String DRDocumentReader::curValueAsString() {
 	String val;
-	stringSize_t size = *(stringSize_t*) curFieldValue_;
+	stringSize_t size = *(stringSize_t*) curFieldValue_.bytes;
 	for (int i = 0; i < size; ++i) {
-		val += ((char *) curFieldValue_) [i + sizeof(stringSize_t)];
+		val += ((char *) curFieldValue_.bytes) [i + sizeof(stringSize_t)];
 	}
 	return val;
 }
 
 DocumentReader* DRDocumentReader::curValueAsDocument() {
-	delete lastByteInputStream_;
 	delete lastDocumentValue_;
 
-	lastByteInputStream_ = new ByteInputStream((byte*) curFieldValue_, curFieldValueSize_);
-	lastDocumentValue_ = new DRDocumentReader(lastByteInputStream_);
+	lastDocumentValue_ = new DRDocumentReader(ByteInputStream(curFieldValue_));
 	return lastDocumentValue_;
 }
 
@@ -63,62 +82,45 @@ void DRDocumentReader::loadNextField() {
 
 void DRDocumentReader::loadNextFieldId() {
 	if (curFieldIdType_ != -1) {
-		curFieldName_ = inputStream_->nextCString();
+		curFieldName_ = inputStream_.nextCString();
 
 		nBytesRead_ += curFieldName_.size() + 1;
 	} else {
-		curFieldId_ = inputStream_->nextInt16();
+		curFieldId_ = inputStream_.nextInt16();
 		nBytesRead_ += sizeof(int16);
 	}
 }
 
 void DRDocumentReader::loadNextFieldValue() {
-	delete[] (char*) curFieldValue_;
-
-	curFieldType_ = inputStream_->nextByte();
-	nBytesRead_ += 1;
+	inputStream_.nextBytes(&curFieldType_, sizeof(fieldType_t));
+	nBytesRead_ += sizeof(fieldType_t);
 
 	if (curFieldType_ == FieldType.INT64) {
-		curFieldValueSize_ = sizeof(int64);
-
-		curFieldValue_ = new byte[curFieldValueSize_];
-		inputStream_->nextBytes(curFieldValue_, curFieldValueSize_);
-		nBytesRead_ += curFieldValueSize_;
+		curFieldValue_.size = sizeof(int64);
+		curFieldValue_.bytes = inputStream_.nextBytes(curFieldValue_.size);
+		nBytesRead_ += curFieldValue_.size;
 	} else if (curFieldType_ == FieldType.STRING) {
 		stringSize_t size;
-		inputStream_->nextBytes(&size, sizeof(stringSize_t));
-		nBytesRead_ += sizeof(stringSize_t);
-		curFieldValueSize_ = size;
+		inputStream_.peekBytes(&size, sizeof(stringSize_t));
+		curFieldValue_.size = size;
 
-		curFieldValue_ = new byte[curFieldValueSize_];
-		*(stringSize_t *) curFieldValue_ = curFieldValueSize_;
-		inputStream_->nextBytes(curFieldValue_ + sizeof(stringSize_t), curFieldValueSize_);
-		nBytesRead_ += curFieldValueSize_;
+		curFieldValue_.bytes = inputStream_.nextBytes(size + sizeof(stringSize_t));
+		nBytesRead_ += curFieldValue_.size + sizeof(stringSize_t);
 	} else if (curFieldType_ == FieldType.DOCUMENT) {
 		docSize_t size;
-		inputStream_->nextBytes(&size, sizeof(docSize_t));
-		curFieldValueSize_ = size;
+		inputStream_.peekBytes(&size, sizeof(docSize_t));
+		curFieldValue_.size = size;
 
-		curFieldValue_ = new byte[curFieldValueSize_];
-		*(docSize_t *) curFieldValue_ = curFieldValueSize_;
-		inputStream_->nextBytes(curFieldValue_ + sizeof(docSize_t), curFieldValueSize_);
-		nBytesRead_ += curFieldValueSize_;
+		curFieldValue_.bytes = inputStream_.nextBytes(curFieldValue_.size);
+		nBytesRead_ += curFieldValue_.size;
 	} else if (curFieldType_ == FieldType.ARRAY) {
 		arraySize_t size;
-		inputStream_->nextBytes(&size, sizeof(arraySize_t));
-		curFieldValueSize_ = size;
+		inputStream_.peekBytes(&size, sizeof(arraySize_t));
+		curFieldValue_.size = size;
 
-		curFieldValue_ = new byte [curFieldValueSize_];
-		*(arraySize_t *) curFieldValue_ = curFieldValueSize_;
-		inputStream_->nextBytes(curFieldValue_ + sizeof(arraySize_t), curFieldValueSize_);
-		nBytesRead_ += curFieldValueSize_;
+		curFieldValue_.bytes = inputStream_.nextBytes(curFieldValue_.size);
+		nBytesRead_ += curFieldValue_.size;
 	}
-}
-
-DRDocumentReader::~DRDocumentReader() {
-	delete lastByteInputStream_;
-	delete lastDocumentValue_;
-	delete[] (char*) curFieldValue_;
 }
 
 }}

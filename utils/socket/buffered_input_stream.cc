@@ -27,6 +27,7 @@ void BufferedSocketInputStream::read(void *buffer, int maxNumOfBytesToRead) {
 	//todo: adsf
 //    char* buff = (char*) buffer_;
 // for now ignore the buffer_
+	//todo: if maxNumOfBytesToRead > # bytes available in buffer_, we will 1) copy the data remaining in buffer_ 2) read directly into buffer, without touching buffer_. This will save copying twice.
 	clientSocket_->readData(buffer, maxNumOfBytesToRead);
 }
 

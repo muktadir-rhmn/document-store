@@ -15,6 +15,7 @@ namespace document { namespace  dr {
 class DRDocumentReader : public document::DocumentReader {
 public:
 	explicit DRDocumentReader(InputStream* inputStream, int fieldIdType = 0);
+	explicit DRDocumentReader(ByteInputStream inputStream, int fieldIdType = 0);
 	~DRDocumentReader() override;
 
 	bool next() override;
@@ -32,7 +33,8 @@ public:
 	DocumentReader* curValueAsDocument() override;
 
 private:
-	InputStream* inputStream_;
+	RawData documentRawData_;
+	ByteInputStream inputStream_;
 	docSize_t documentSize_;
 	docSize_t nBytesRead_;
 
@@ -41,16 +43,16 @@ private:
 	fieldId_t curFieldId_=-1;
 
 	fieldType_t curFieldType_;
-	int curFieldValueSize_;
-	byte* curFieldValue_= nullptr; //todo: now current field is copied and stored in this buffer. But I can improve its performance by removing this buffer and directly returning data from the stream
+	RawData curFieldValue_;
 
-	ByteInputStream* lastByteInputStream_ = nullptr;
 	DRDocumentReader* lastDocumentValue_ = nullptr;
 
 	///this function has the logic of how a field of a document is represented
 	void loadNextField();
 	inline void loadNextFieldId();
 	inline void loadNextFieldValue();
+
+	RawData extractRawData(InputStream* inputStream);
 };
 
 }}
