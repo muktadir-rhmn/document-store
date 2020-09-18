@@ -8,7 +8,7 @@
 #include "../utils/data/byte_input_stream.h"
 #include "../utils/exceptions/exception.h"
 #include "document_writer.h"
-#include "../storage_api/field_name_id_map.h"
+#include "../storage/api/field_name_id_map.h"
 #include "dr/dr_document_writer.h"
 #include "dr/dr_document_reader.h"
 #include "../utils/socket/buffered_input_stream.h"

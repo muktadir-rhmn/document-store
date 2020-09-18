@@ -4,9 +4,8 @@
 
 #include "../utils/debug/debug.h"
 #include "processor.h"
-#include "../utils/exceptions/exception.h"
 #include "database_processor.h"
-#include "../storage_api/database_manager.h"
+#include "../storage/api/database_manager.h"
 #include "collection_processor.h"
 #include "request_response_constants.h"
 

@@ -5,8 +5,8 @@
 #include <string>
 #include "database_manager_imp.h"
 #include "database_imp.h"
-#include "../../utils/exceptions/exception.h"
-#include "../../utils/debug/debug.h"
+#include "../../../utils/exceptions/exception.h"
+#include "../../../utils/debug/debug.h"
 
 namespace storageengine { namespace wiredtiger{
 

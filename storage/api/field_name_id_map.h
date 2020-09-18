@@ -8,9 +8,9 @@
 
 #include <string>
 #include <map>
-#include "../typedefs.h"
-#include "../utils/data/byte_input_stream.h"
-#include "../utils/socket/buffered_output_stream.h"
+#include "../../typedefs.h"
+#include "../../utils/data/byte_input_stream.h"
+#include "../../utils/socket/buffered_output_stream.h"
 
 class FieldNameIDMap {
 public:

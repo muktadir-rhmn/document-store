@@ -7,8 +7,8 @@
 
 
 #include "../connection/connection_descriptor.h"
-#include "../storage_api/database.h"
-#include "../storage_api/collection.h"
+#include "../storage/api/database.h"
+#include "../storage/api/collection.h"
 
 class CollectionProcessor {
 public:

@@ -490,7 +490,7 @@ struct __wt_cursor {
 	 * @errors
 	 * In particular, if \c overwrite=false is configured and a record with
 	 * the specified key already exists, ::WT_DUPLICATE_KEY is returned.
-	 * Also, if \c in_memory is configured for the storage_api and the insert
+	 * Also, if \c in_memory is configured for the api and the insert
 	 * requires more than the configured cache size to complete,
 	 * ::WT_CACHE_FULL is returned.
 	 */
@@ -536,7 +536,7 @@ struct __wt_cursor {
 	 * @param entries an array of modification data structures
 	 * @param nentries the number of modification data structures
 	 * @errors
-	 * In particular, if \c in_memory is configured for the storage_api and
+	 * In particular, if \c in_memory is configured for the api and
 	 * the modify requires more than the configured cache size to complete,
 	 * ::WT_CACHE_FULL is returned.
 	 */
@@ -571,7 +571,7 @@ struct __wt_cursor {
 	 * @errors
 	 * In particular, if \c overwrite=false is configured and no record with
 	 * the specified key exists, ::WT_NOTFOUND is returned.
-	 * Also, if \c in_memory is configured for the storage_api and the update
+	 * Also, if \c in_memory is configured for the api and the update
 	 * requires more than the configured cache size to complete,
 	 * ::WT_CACHE_FULL is returned.
 	 */
@@ -696,8 +696,8 @@ struct __wt_cursor {
 	uint64_t recno;			/* Record number, normal and raw mode */
 	uint8_t raw_recno_buf[WT_INTPACK64_MAXSIZE];
 
-	void	*json_private;		/* JSON specific storage_api */
-	void	*lang_private;		/* Language specific private storage_api */
+	void	*json_private;		/* JSON specific api */
+	void	*lang_private;		/* Language specific private api */
 
 	WT_ITEM key, value;
 	int saved_err;			/* Saved error in set_{key,value}. */
@@ -1094,14 +1094,14 @@ struct __wt_session {
 	 * cursor types except for log and metadata cursors., a boolean flag; default \c false.}
 	 * @config{statistics, Specify the statistics to be gathered.  Choosing "all" gathers
 	 * statistics regardless of cost and may include traversing on-disk files; "fast" gathers a
-	 * subset of relatively inexpensive statistics.  The selection must agree with the storage_api
+	 * subset of relatively inexpensive statistics.  The selection must agree with the api
 	 * \c statistics configuration specified to ::wiredtiger_open or WT_CONNECTION::reconfigure.
-	 * For example\, "all" or "fast" can be configured when the storage_api is configured with
-	 * "all"\, but the cursor open will fail if "all" is specified when the storage_api is
-	 * configured with "fast"\, and the cursor open will fail in all cases when the storage_api is
+	 * For example\, "all" or "fast" can be configured when the api is configured with
+	 * "all"\, but the cursor open will fail if "all" is specified when the api is
+	 * configured with "fast"\, and the cursor open will fail in all cases when the api is
 	 * configured with "none". If "size" is configured\, only the underlying size of the object
 	 * on disk is filled in and the object is not opened.  If \c statistics is not configured\,
-	 * the default configuration is the storage_api configuration.  The "clear" configuration
+	 * the default configuration is the api configuration.  The "clear" configuration
 	 * resets statistics after gathering them\, where appropriate (for example\, a cache size
 	 * statistic is not cleared\, while the count of cursor insert operations will be cleared).
 	 * See @ref statistics for more information., a list\, with values chosen from the following
@@ -1185,7 +1185,7 @@ struct __wt_session {
 	 * "sequential"; default \c none.}
 	 * @config{allocation_size, the file unit allocation size\, in bytes\, must a power-of-two;
 	 * smaller values decrease the file space required by overflow items\, and the default value
-	 * of 4KB is a good choice absent requirements from the operating system or storage_api device.,
+	 * of 4KB is a good choice absent requirements from the operating system or api device.,
 	 * an integer between 512B and 128MB; default \c 4KB.}
 	 * @config{app_metadata, application-owned metadata for this object., a string; default
 	 * empty.}
@@ -1228,7 +1228,7 @@ struct __wt_session {
 	 * a set of related configuration options defined below.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;
 	 * keyid, An identifier that identifies a unique instance_ of the encryptor.  It is stored in
-	 * clear text\, and thus is available when the lib storage_api is reopened.  On the
+	 * clear text\, and thus is available when the lib api is reopened.  On the
 	 * first use of a (name\, keyid) combination\, the WT_ENCRYPTOR::customize function is
 	 * called with the keyid as an argument., a string; default empty.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;name, Permitted values are \c "none" or custom encryption
@@ -1279,7 +1279,7 @@ struct __wt_session {
 	 * integer greater than or equal to 0; default \c 0.}
 	 * @config{leaf_page_max, the maximum page size for leaf nodes\, in bytes; the size must be
 	 * a multiple of the allocation size\, and is significant for applications wanting to
-	 * maximize sequential data transfer from a storage_api device.  The page maximum is the bytes
+	 * maximize sequential data transfer from a api device.  The page maximum is the bytes
 	 * of uncompressed data\, that is\, the limit is applied before any block compression is
 	 * done., an integer between 512B and 512MB; default \c 32KB.}
 	 * @config{leaf_value_max, the largest value stored in a leaf node\, in bytes.  If set\,
@@ -1339,10 +1339,10 @@ struct __wt_session {
 	 * more than 100; default \c 0.}
 	 * @config{ ),,}
 	 * @config{memory_page_image_max, the maximum in-memory page image represented by a single
-	 * storage_api block.  Depending on compression efficiency\, compression can create storage_api
+	 * api block.  Depending on compression efficiency\, compression can create api
 	 * blocks which require significant resources to re-instantiate in the cache\, penalizing
 	 * the performance of future point updates.  The value limits the maximum in-memory page
-	 * image a storage_api block will need.  If set to 0\, a default of 4 times \c leaf_page_max is
+	 * image a api block will need.  If set to 0\, a default of 4 times \c leaf_page_max is
 	 * used., an integer greater than or equal to 0; default \c 0.}
 	 * @config{memory_page_max, the maximum size a page can grow to in memory before being
 	 * reconciled to disk.  The specified size will be adjusted to a lower bound of
@@ -1506,7 +1506,7 @@ struct __wt_session {
 	 * specified.  The \c background setting initiates a background synchronization intended to
 	 * be used with a later call to WT_SESSION::transaction_sync.  The \c off setting forces any
 	 * buffered log records to be written to the file system.  The \c on setting forces log
-	 * records to be written to the storage_api device., a string\, chosen from the following
+	 * records to be written to the api device., a string\, chosen from the following
 	 * options: \c "background"\, \c "off"\, \c "on"; default \c on.}
 	 * @configend
 	 * @errors
@@ -1514,8 +1514,8 @@ struct __wt_session {
 	int __F(log_flush)(WT_SESSION *session, const char *config);
 
 	/*!
-	 * Insert a ::WT_LOGREC_MESSAGE type record in the storage_api log files
-	 * (the storage_api must be configured for logging when this method is
+	 * Insert a ::WT_LOGREC_MESSAGE type record in the api log files
+	 * (the api must be configured for logging when this method is
 	 * called).
 	 *
 	 * @param session the session handle
@@ -1783,7 +1783,7 @@ struct __wt_session {
 	 * inherited from ::wiredtiger_open \c transaction_sync.  The \c background setting
 	 * initiates a background synchronization intended to be used with a later call to
 	 * WT_SESSION::transaction_sync.  The \c off setting does not wait for record to be written
-	 * or synchronized.  The \c on setting forces log records to be written to the storage_api
+	 * or synchronized.  The \c on setting forces log records to be written to the api
 	 * device., a string\, chosen from the following options: \c "background"\, \c "off"\, \c
 	 * "on"; default empty.}
 	 * @configend
@@ -1884,7 +1884,7 @@ struct __wt_session {
 	    WT_SESSION *session, char *hex_timestamp, const char *config);
 
 	/*!
-	 * write a transactionally consistent snapshot of a storage_api or set of
+	 * write a transactionally consistent snapshot of a api or set of
 	 * objects.  In the absence of transaction timestamps, the checkpoint
 	 * includes all transactions committed before the checkpoint starts.
 	 *
@@ -2008,12 +2008,12 @@ struct __wt_session {
 };
 
 /*!
- * A connection to a WiredTiger storage_api.  The connection may be opened within
+ * A connection to a WiredTiger api.  The connection may be opened within
  * the same address space as the caller or accessed over a socket connection.
  *
- * Most applications will open a single connection to a storage_api for each
- * process.  The first process to open a connection to a storage_api will access
- * the storage_api in its own address space.  Subsequent connections (if allowed)
+ * Most applications will open a single connection to a api for each
+ * process.  The first process to open a connection to a api will access
+ * the api in its own address space.  Subsequent connections (if allowed)
  * will communicate with the first process over a socket connection to perform
  * their operations.
  *
@@ -2146,22 +2146,22 @@ struct __wt_connection {
 	 * workloads will have different heap allocation sizes and patterns\, therefore applications
 	 * may need to adjust this value based on allocator choice and behavior in measured
 	 * workloads., an integer between 0 and 30; default \c 8.}
-	 * @config{cache_size, maximum heap memory to allocate for the cache.  A storage_api should
+	 * @config{cache_size, maximum heap memory to allocate for the cache.  A api should
 	 * configure either \c cache_size or \c shared_cache but not both., an integer between 1MB
 	 * and 10TB; default \c 100MB.}
-	 * @config{checkpoint = (, periodically checkpoint the storage_api.  Enabling the checkpoint
+	 * @config{checkpoint = (, periodically checkpoint the api.  Enabling the checkpoint
 	 * server uses a session from the configured session_max., a set of related configuration
 	 * options defined below.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;log_size, wait for this amount of
 	 * log record bytes to be written to the log between each checkpoint.  If non-zero\, this
-	 * value will use a minimum of the log file size.  A storage_api can configure both log_size
+	 * value will use a minimum of the log file size.  A api can configure both log_size
 	 * and wait to set an upper bound for checkpoints; setting this value above 0 configures
 	 * periodic checkpoints., an integer between 0 and 2GB; default \c 0.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;wait, seconds to wait between each checkpoint; setting
 	 * this value above 0 configures periodic checkpoints., an integer between 0 and 100000;
 	 * default \c 0.}
 	 * @config{ ),,}
-	 * @config{compatibility = (, set compatibility version of storage_api.  Changing the
+	 * @config{compatibility = (, set compatibility version of api.  Changing the
 	 * compatibility version requires that there are no active operations for the duration of
 	 * the call., a set of related configuration options defined below.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;release, compatibility release version string., a string;
@@ -2254,7 +2254,7 @@ struct __wt_connection {
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;zero_fill, manually write zeroes into
 	 * log files., a boolean flag; default \c false.}
 	 * @config{ ),,}
-	 * @config{lsm_manager = (, configure storage_api wide options for LSM tree management.  The
+	 * @config{lsm_manager = (, configure api wide options for LSM tree management.  The
 	 * LSM manager is started automatically the first time an LSM tree is opened.  The LSM
 	 * manager uses a session from the configured session_max., a set of related configuration
 	 * options defined below.}
@@ -2262,7 +2262,7 @@ struct __wt_connection {
 	 * possible., a boolean flag; default \c true.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;
 	 * worker_thread_max, Configure a set of threads to manage merging LSM trees in the
-	 * storage_api.  Each worker thread uses a session handle from the configured session_max., an
+	 * api.  Each worker thread uses a session handle from the configured session_max., an
 	 * integer between 3 and 20; default \c 4.}
 	 * @config{ ),,}
 	 * @config{operation_tracking = (, enable tracking of performance-critical functions.  See
@@ -2273,9 +2273,9 @@ struct __wt_connection {
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;path, the
 	 * name of a directory into which operation tracking files are written.  The directory must
 	 * already exist.  If the value is not an absolute path\, the path is relative to the
-	 * storage_api home (see @ref absolute_path for more information)., a string; default \c ".".}
+	 * api home (see @ref absolute_path for more information)., a string; default \c ".".}
 	 * @config{ ),,}
-	 * @config{shared_cache = (, shared cache configuration options.  A storage_api should
+	 * @config{shared_cache = (, shared cache configuration options.  A api should
 	 * configure either a cache_size or a shared_cache not both.  Enabling a shared cache uses a
 	 * session from the configured session_max.  A shared cache can not have absolute values
 	 * configured for cache eviction settings., a set of related configuration options defined
@@ -2284,35 +2284,35 @@ struct __wt_connection {
 	 * redistributed., an integer between 1MB and 10TB; default \c 10MB.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;name, the name of a cache that is shared between
 	 * databases or \c "none" when no shared cache is configured., a string; default \c none.}
-	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;quota, maximum size of cache this storage_api can be
+	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;quota, maximum size of cache this api can be
 	 * allocated from the shared cache.  Defaults to the entire shared cache size., an integer;
 	 * default \c 0.}
-	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;reserve, amount of cache this storage_api is
-	 * guaranteed to have available from the shared cache.  This setting is per storage_api.
+	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;reserve, amount of cache this api is
+	 * guaranteed to have available from the shared cache.  This setting is per api.
 	 * Defaults to the chunk size., an integer; default \c 0.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;
 	 * size, maximum memory to allocate for the shared cache.  Setting this will update the
 	 * value if one is already set., an integer between 1MB and 10TB; default \c 500MB.}
 	 * @config{ ),,}
-	 * @config{statistics, Maintain storage_api statistics\, which may impact performance.
+	 * @config{statistics, Maintain api statistics\, which may impact performance.
 	 * Choosing "all" maintains all statistics regardless of cost\, "fast" maintains a subset of
 	 * statistics that are relatively inexpensive\, "none" turns off all statistics.  The
 	 * "clear" configuration resets statistics after they are gathered\, where appropriate (for
 	 * example\, a cache size statistic is not cleared\, while the count of cursor insert
-	 * operations will be cleared). When "clear" is configured for the storage_api\, gathered
+	 * operations will be cleared). When "clear" is configured for the api\, gathered
 	 * statistics are reset each time a statistics cursor is used to gather statistics\, as well
 	 * as each time statistics are logged using the \c statistics_log configuration.  See @ref
 	 * statistics for more information., a list\, with values chosen from the following options:
 	 * \c "all"\, \c "cache_walk"\, \c "fast"\, \c "none"\, \c "clear"\, \c "tree_walk"; default
 	 * \c none.}
-	 * @config{statistics_log = (, log any statistics the storage_api is configured to maintain\,
+	 * @config{statistics_log = (, log any statistics the api is configured to maintain\,
 	 * to a file.  See @ref statistics for more information.  Enabling the statistics log server
 	 * uses a session from the configured session_max., a set of related configuration options
 	 * defined below.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;json, encode statistics in JSON format.,
 	 * a boolean flag; default \c false.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;on_close, log
-	 * statistics on storage_api closeSocket., a boolean flag; default \c false.}
+	 * statistics on api closeSocket., a boolean flag; default \c false.}
 	 * @config{&nbsp;&nbsp;&nbsp;&nbsp;sources, if non-empty\, include statistics for the list
 	 * of data source URIs\, if they are open at the time of the statistics logging.  The list
 	 * may include URIs matching a single data source ("table:mytable")\, or a URI matching all
@@ -2343,7 +2343,7 @@ struct __wt_connection {
 	/*!
 	 * The home directory of the connection.
 	 *
-	 * @snippet ex_all.c Get the storage_api home directory
+	 * @snippet ex_all.c Get the api home directory
 	 *
 	 * @param connection the connection handle
 	 * @returns a pointer to a string naming the home directory
@@ -2371,9 +2371,9 @@ struct __wt_connection {
 	    const char *config, const char *type, const char *check);
 
 	/*!
-	 * Return if opening this handle created the storage_api.
+	 * Return if opening this handle created the api.
 	 *
-	 * @snippet ex_all.c Check if the storage_api is newly created
+	 * @snippet ex_all.c Check if the api is newly created
 	 *
 	 * @param connection the connection handle
 	 * @returns false (zero) if the connection existed before the call to
@@ -2680,11 +2680,11 @@ struct __wt_connection {
 };
 
 /*!
- * Open a connection to a storage_api.
+ * Open a connection to a api.
  *
  * @snippet ex_all.c Open a connection
  *
- * @param home The path to the storage_api home directory.  See @ref home
+ * @param home The path to the api home directory.  See @ref home
  * for more information.
  * @param event_handler An event handler. If <code>NULL</code>, a default
  * event handler is installed that writes error messages to stderr. See
@@ -2728,24 +2728,24 @@ struct __wt_connection {
  * heap allocation sizes and patterns\, therefore applications may need to adjust this value based
  * on allocator choice and behavior in measured workloads., an integer between 0 and 30; default \c
  * 8.}
- * @config{cache_size, maximum heap memory to allocate for the cache.  A storage_api should configure
+ * @config{cache_size, maximum heap memory to allocate for the cache.  A api should configure
  * either \c cache_size or \c shared_cache but not both., an integer between 1MB and 10TB; default
  * \c 100MB.}
- * @config{checkpoint = (, periodically checkpoint the storage_api.  Enabling the checkpoint server
+ * @config{checkpoint = (, periodically checkpoint the api.  Enabling the checkpoint server
  * uses a session from the configured session_max., a set of related configuration options defined
  * below.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;log_size, wait for this amount of log record bytes to be
  * written to the log between each checkpoint.  If non-zero\, this value will use a minimum of the
- * log file size.  A storage_api can configure both log_size and wait to set an upper bound for
+ * log file size.  A api can configure both log_size and wait to set an upper bound for
  * checkpoints; setting this value above 0 configures periodic checkpoints., an integer between 0
  * and 2GB; default \c 0.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;wait, seconds to wait between each
  * checkpoint; setting this value above 0 configures periodic checkpoints., an integer between 0 and
  * 100000; default \c 0.}
  * @config{ ),,}
- * @config{checkpoint_sync, flush files to stable storage_api when closing or writing checkpoints., a
+ * @config{checkpoint_sync, flush files to stable api when closing or writing checkpoints., a
  * boolean flag; default \c true.}
- * @config{compatibility = (, set compatibility version of storage_api.  Changing the compatibility
+ * @config{compatibility = (, set compatibility version of api.  Changing the compatibility
  * version requires that there are no active operations for the duration of the call., a set of
  * related configuration options defined below.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;release,
@@ -2753,17 +2753,17 @@ struct __wt_connection {
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;
  * require_max, required maximum compatibility version of existing data files.  Must be greater than
  * or equal to any release version set in the \c release setting.  Has no effect if creating the
- * storage_api., a string; default empty.}
+ * api., a string; default empty.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;require_min, required
  * minimum compatibility version of existing data files.  Must be less than or equal to any release
- * version set in the \c release setting.  Has no effect if creating the storage_api., a string;
+ * version set in the \c release setting.  Has no effect if creating the api., a string;
  * default empty.}
  * @config{ ),,}
- * @config{config_base, write the base configuration file if creating the storage_api.  If \c false in
+ * @config{config_base, write the base configuration file if creating the api.  If \c false in
  * the config passed directly to ::wiredtiger_open\, will ignore any existing base configuration
  * file in addition to not creating one.  See @ref config_base for more information., a boolean
  * flag; default \c true.}
- * @config{create, create the storage_api if it does not exist., a boolean flag; default \c false.}
+ * @config{create, create the api if it does not exist., a boolean flag; default \c false.}
  * @config{debug_mode = (, control the settings of various extended debugging features., a set of
  * related configuration options defined below.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;
@@ -2798,7 +2798,7 @@ struct __wt_connection {
  * related configuration options defined below.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;keyid, An
  * identifier that identifies a unique instance_ of the encryptor.  It is stored in clear text\, and
- * thus is available when the lib storage_api is reopened.  On the first use of a (name\, keyid)
+ * thus is available when the lib api is reopened.  On the first use of a (name\, keyid)
  * combination\, the WT_ENCRYPTOR::customize function is called with the keyid as an argument., a
  * string; default empty.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;name, Permitted values are \c "none" or
@@ -2806,8 +2806,8 @@ struct __wt_connection {
  * more information., a string; default \c none.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;secretkey, A
  * string that is passed to the WT_ENCRYPTOR::customize function.  It is never stored in clear
- * text\, so must be given to any subsequent ::wiredtiger_open calls to reopen the storage_api.  It
- * must also be provided to any "wt" commands used with this storage_api., a string; default empty.}
+ * text\, so must be given to any subsequent ::wiredtiger_open calls to reopen the api.  It
+ * must also be provided to any "wt" commands used with this api., a string; default empty.}
  * @config{ ),,}
  * @config{error_prefix, prefix string for error messages., a string; default empty.}
  * @config{eviction = (, eviction configuration options., a set of related configuration options
@@ -2843,7 +2843,7 @@ struct __wt_connection {
  * at least this much content.  It is a percentage of the cache size if the value is within the
  * range of 10 to 100 or an absolute size when greater than 100. The value is not allowed to exceed
  * the \c cache_size., an integer between 10 and 10TB; default \c 95.}
- * @config{exclusive, fail if the storage_api already exists\, generally used with the \c create
+ * @config{exclusive, fail if the api already exists\, generally used with the \c create
  * option., a boolean flag; default \c false.}
  * @config{extensions, list of shared library extensions to load (using dlopen). Any values
  * specified to a library extension are passed to WT_CONNECTION::load_extension as the \c config
@@ -2895,7 +2895,7 @@ struct __wt_connection {
  * buffer_ cache without an intervening file sync., an integer between 0 and 100; default \c 0.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;path, the name of a directory into which log files are written.
  * The directory must already exist.  If the value is not an absolute path\, the path is relative to
- * the storage_api home (see @ref absolute_path for more information)., a string; default \c ".".}
+ * the api home (see @ref absolute_path for more information)., a string; default \c ".".}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;prealloc, pre-allocate log files., a boolean flag; default \c
  * true.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;recover, run recovery or error if recovery needs to run
@@ -2904,13 +2904,13 @@ struct __wt_connection {
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;zero_fill, manually write zeroes into log files.,
  * a boolean flag; default \c false.}
  * @config{ ),,}
- * @config{lsm_manager = (, configure storage_api wide options for LSM tree management.  The LSM
+ * @config{lsm_manager = (, configure api wide options for LSM tree management.  The LSM
  * manager is started automatically the first time an LSM tree is opened.  The LSM manager uses a
  * session from the configured session_max., a set of related configuration options defined below.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;merge, merge LSM chunks where possible., a boolean flag; default
  * \c true.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;worker_thread_max, Configure a set of threads to manage
- * merging LSM trees in the storage_api.  Each worker thread uses a session handle from the configured
+ * merging LSM trees in the api.  Each worker thread uses a session handle from the configured
  * session_max., an integer between 3 and 20; default \c 4.}
  * @config{ ),,}
  * @config{mmap, Use memory mapping to access files when possible., a boolean flag; default \c
@@ -2924,20 +2924,20 @@ struct __wt_connection {
  * default \c false.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;path, the name of a directory into which
  * operation tracking files are written.  The directory must already exist.  If the value is not an
- * absolute path\, the path is relative to the storage_api home (see @ref absolute_path for more
+ * absolute path\, the path is relative to the api home (see @ref absolute_path for more
  * information)., a string; default \c ".".}
  * @config{ ),,}
- * @config{readonly, open connection in read-only mode.  The storage_api must exist.  All methods that
- * may modify a storage_api are disabled.  See @ref readonly for more information., a boolean flag;
+ * @config{readonly, open connection in read-only mode.  The api must exist.  All methods that
+ * may modify a api are disabled.  See @ref readonly for more information., a boolean flag;
  * default \c false.}
- * @config{salvage, open connection and salvage any WiredTiger-owned storage_api and log files that it
+ * @config{salvage, open connection and salvage any WiredTiger-owned api and log files that it
  * detects as corrupted.  This API should only be used after getting an error return of
  * WT_TRY_SALVAGE. Salvage rebuilds files in place\, overwriting existing files.  We recommend
  * making a backup copy of all files with the WiredTiger prefix prior to passing this flag., a
  * boolean flag; default \c false.}
  * @config{session_max, maximum expected number of sessions (including server threads)., an integer
  * greater than or equal to 1; default \c 100.}
- * @config{shared_cache = (, shared cache configuration options.  A storage_api should configure either
+ * @config{shared_cache = (, shared cache configuration options.  A api should configure either
  * a cache_size or a shared_cache not both.  Enabling a shared cache uses a session from the
  * configured session_max.  A shared cache can not have absolute values configured for cache
  * eviction settings., a set of related configuration options defined below.}
@@ -2947,35 +2947,35 @@ struct __wt_connection {
  * a cache that is shared between databases or \c "none" when no shared cache is configured., a
  * string; default \c none.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;quota, maximum size of cache this
- * storage_api can be allocated from the shared cache.  Defaults to the entire shared cache size., an
+ * api can be allocated from the shared cache.  Defaults to the entire shared cache size., an
  * integer; default \c 0.}
- * @config{&nbsp;&nbsp;&nbsp;&nbsp;reserve, amount of cache this storage_api is
- * guaranteed to have available from the shared cache.  This setting is per storage_api.  Defaults to
+ * @config{&nbsp;&nbsp;&nbsp;&nbsp;reserve, amount of cache this api is
+ * guaranteed to have available from the shared cache.  This setting is per api.  Defaults to
  * the chunk size., an integer; default \c 0.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;size, maximum memory
  * to allocate for the shared cache.  Setting this will update the value if one is already set., an
  * integer between 1MB and 10TB; default \c 500MB.}
  * @config{ ),,}
- * @config{statistics, Maintain storage_api statistics\, which may impact performance.  Choosing "all"
+ * @config{statistics, Maintain api statistics\, which may impact performance.  Choosing "all"
  * maintains all statistics regardless of cost\, "fast" maintains a subset of statistics that are
  * relatively inexpensive\, "none" turns off all statistics.  The "clear" configuration resets
  * statistics after they are gathered\, where appropriate (for example\, a cache size statistic is
  * not cleared\, while the count of cursor insert operations will be cleared). When "clear" is
- * configured for the storage_api\, gathered statistics are reset each time a statistics cursor is used
+ * configured for the api\, gathered statistics are reset each time a statistics cursor is used
  * to gather statistics\, as well as each time statistics are logged using the \c statistics_log
  * configuration.  See @ref statistics for more information., a list\, with values chosen from the
  * following options: \c "all"\, \c "cache_walk"\, \c "fast"\, \c "none"\, \c "clear"\, \c
  * "tree_walk"; default \c none.}
- * @config{statistics_log = (, log any statistics the storage_api is configured to maintain\, to a
+ * @config{statistics_log = (, log any statistics the api is configured to maintain\, to a
  * file.  See @ref statistics for more information.  Enabling the statistics log server uses a
  * session from the configured session_max., a set of related configuration options defined below.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;json, encode statistics in JSON format., a boolean flag; default
  * \c false.}
- * @config{&nbsp;&nbsp;&nbsp;&nbsp;on_close, log statistics on storage_api closeSocket., a boolean
+ * @config{&nbsp;&nbsp;&nbsp;&nbsp;on_close, log statistics on api closeSocket., a boolean
  * flag; default \c false.}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;path, the name of a directory into which
  * statistics files are written.  The directory must already exist.  If the value is not an absolute
- * path\, the path is relative to the storage_api home (see @ref absolute_path for more information).,
+ * path\, the path is relative to the api home (see @ref absolute_path for more information).,
  * a string; default \c ".".}
  * @config{&nbsp;&nbsp;&nbsp;&nbsp;sources, if non-empty\, include
  * statistics for the list of data source URIs\, if they are open at the time of the statistics
@@ -3419,7 +3419,7 @@ struct __wt_config_item {
  * This API is outside the scope of a WiredTiger connection handle, since
  * applications may need to validate configuration strings prior to calling
  * ::wiredtiger_open.
- * @param session the session handle (may be \c NULL if the storage_api not yet
+ * @param session the session handle (may be \c NULL if the api not yet
  * opened).
  * @param event_handler An event handler (used if \c session is \c NULL; if both
  * \c session and \c event_handler are \c NULL, error messages will be written
@@ -3650,7 +3650,7 @@ const char *wiredtiger_version(int *majorp, int *minorp, int *patchp)
 #define	WT_NOTFOUND	(-31803)
 /*!
  * WiredTiger library panic.
- * This error indicates an underlying problem that requires a storage_api restart.
+ * This error indicates an underlying problem that requires a api restart.
  * The application may exit immediately, no further WiredTiger calls are
  * required (and further calls will themselves immediately fail).
  */
@@ -3662,7 +3662,7 @@ const char *wiredtiger_version(int *majorp, int *minorp, int *patchp)
 /*!
  * Recovery must be run to continue.
  * This error is generated when wiredtiger_open is configured to return an error
- * if recovery is required to use the storage_api.
+ * if recovery is required to use the api.
  */
 #define	WT_RUN_RECOVERY	(-31806)
 /*!
@@ -3755,7 +3755,7 @@ struct __wt_collator {
 
 	/*!
 	 * If non-NULL a callback performed when the data source is closed
-	 * for customized extractors otherwise when the storage_api is closed.
+	 * for customized extractors otherwise when the api is closed.
 	 *
 	 * The WT_COLLATOR::terminate callback is intended to allow cleanup,
 	 * the handle will not be subsequently accessed by WiredTiger.
@@ -3903,7 +3903,7 @@ struct __wt_compressor {
 	    uint8_t *src, size_t src_len, size_t *result_lenp);
 
 	/*!
-	 * If non-NULL, a callback performed when the storage_api is closed.
+	 * If non-NULL, a callback performed when the api is closed.
 	 *
 	 * The WT_COMPRESSOR::terminate callback is intended to allow cleanup,
 	 * the handle will not be subsequently accessed by WiredTiger.
@@ -4018,7 +4018,7 @@ struct __wt_data_source {
 	    const char *uri, WT_CONFIG_ARG *config);
 
 	/*!
-	 * Callback to checkpoint the storage_api.
+	 * Callback to checkpoint the api.
 	 *
 	 * @snippet ex_data_source.c WT_DATA_SOURCE checkpoint
 	 */
@@ -4026,7 +4026,7 @@ struct __wt_data_source {
 	    WT_DATA_SOURCE *dsrc, WT_SESSION *session, WT_CONFIG_ARG *config);
 
 	/*!
-	 * If non-NULL, a callback performed when the storage_api is closed.
+	 * If non-NULL, a callback performed when the api is closed.
 	 *
 	 * The WT_DATA_SOURCE::terminate callback is intended to allow cleanup,
 	 * the handle will not be subsequently accessed by WiredTiger.
@@ -4182,7 +4182,7 @@ struct __wt_encryptor {
 	    WT_CONFIG_ARG *encrypt_config, WT_ENCRYPTOR **customp);
 
 	/*!
-	 * If non-NULL, a callback performed when the storage_api is closed.
+	 * If non-NULL, a callback performed when the api is closed.
 	 * It is called for each encryptor that was added using
 	 * WT_CONNECTION::add_encryptor or returned by the
 	 * WT_ENCRYPTOR::customize callback.
@@ -4240,7 +4240,7 @@ struct __wt_extractor {
 
 	/*!
 	 * If non-NULL a callback performed when the index or column group
-	 * is closed for customized extractors otherwise when the storage_api
+	 * is closed for customized extractors otherwise when the api
 	 * is closed.
 	 *
 	 * The WT_EXTRACTOR::terminate callback is intended to allow cleanup,
@@ -4452,7 +4452,7 @@ struct __wt_file_system {
 
 	/*!
 	 * A callback performed when the file system is closed and will no
-	 * longer be accessed by the WiredTiger storage_api.
+	 * longer be accessed by the WiredTiger api.
 	 *
 	 * This method is not required and should be set to NULL when not
 	 * required by the file system.
@@ -4526,7 +4526,7 @@ struct __wt_file_handle {
 	 * supported by the file.
 	 *
 	 * Any allocated disk space must read as 0 bytes, and no existing file
-	 * data may change. Allocating all necessary underlying storage_api (not
+	 * data may change. Allocating all necessary underlying api (not
 	 * changing just the file's metadata), is likely to result in increased
 	 * performance.
 	 *
@@ -4551,7 +4551,7 @@ struct __wt_file_handle {
 	 * supported by the file.
 	 *
 	 * Any allocated disk space must read as 0 bytes, and no existing file
-	 * data may change. Allocating all necessary underlying storage_api (not
+	 * data may change. Allocating all necessary underlying api (not
 	 * only changing the file's metadata), is likely to result in increased
 	 * performance.
 	 *
@@ -5656,7 +5656,7 @@ extern int wiredtiger_extension_terminate(WT_CONNECTION *connection);
 /*! transaction: transaction checkpoints */
 #define	WT_STAT_CONN_TXN_CHECKPOINT			1384
 /*!
- * transaction: transaction checkpoints skipped because storage_api was
+ * transaction: transaction checkpoints skipped because api was
  * clean
  */
 #define	WT_STAT_CONN_TXN_CHECKPOINT_SKIPPED		1385

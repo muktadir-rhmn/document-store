@@ -6,7 +6,7 @@
 #define DOCUMENT_STORE_DATABASE_MANAGER_IMP_H
 
 #include <map>
-#include "../../storage_api/database_manager.h"
+#include "../../api/database_manager.h"
 #include "lib/wiredtiger.h"
 
 namespace storageengine { namespace wiredtiger{

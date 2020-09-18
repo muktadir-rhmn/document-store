@@ -6,7 +6,7 @@
 #define DOCUMENT_STORE_COLLECTION_IMP_H
 
 
-#include "../../storage_api/collection.h"
+#include "../../api/collection.h"
 #include "lib/wiredtiger.h"
 
 class CollectionImp : public Collection {

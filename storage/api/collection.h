@@ -8,7 +8,7 @@
 
 #include <map>
 #include "field_name_id_map.h"
-#include "../utils/data/byte_output_stream.h"
+#include "../../utils/data/byte_output_stream.h"
 
 class Collection {
 public:

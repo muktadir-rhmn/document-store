@@ -5,8 +5,8 @@
 #ifndef DOCUMENT_STORE_DATABASE_IMP_H
 #define DOCUMENT_STORE_DATABASE_IMP_H
 
-#include "../../storage_api/database.h"
 #include "lib/wiredtiger.h"
+#include "../../api/database.h"
 
 namespace storageengine { namespace wiredtiger{
 
