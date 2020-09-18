@@ -25,7 +25,7 @@ bool DRArrayReader::next() {
 	readCurElementType_ = false;
 	readCurElementValue_ = false;
 
-	return false;
+	return true;
 }
 
 fieldType_t DRArrayReader::curElementType() {
@@ -38,12 +38,13 @@ fieldType_t DRArrayReader::curElementType() {
 }
 
 int64 DRArrayReader::curValueAsInt64() {
-	ASSERT(!readCurElementType_, "Type must be read before value");
+	ASSERT(readCurElementType_, "Type must be read before value");
 	ASSERT(curElementType_ == FieldType.INT64, "Current element is not INT64");
 	ASSERT(!readCurElementValue_, "Element can be read only once");
 
 	int64 val;
 	inputStream_->nextBytes(&val, sizeof(int64));
+	nBytesRead_ += sizeof(int64);
 	return val;
 }
 
