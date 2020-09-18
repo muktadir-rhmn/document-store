@@ -49,15 +49,17 @@ int64 DRArrayReader::curValueAsInt64() {
 }
 
 String DRArrayReader::curValueAsString() {
-	ASSERT(!readCurElementType_, "Type must be read before value");
+	ASSERT(readCurElementType_, "Type must be read before value");
 	ASSERT(curElementType_ == FieldType.STRING, "Current element is not String");
 	ASSERT(!readCurElementValue_, "Element can be read only once");
 
 	stringSize_t size;
 	inputStream_->nextBytes(&size, sizeof(stringSize_t));
+	nBytesRead_ += sizeof(stringSize_t);
 
 	char str[size];
 	inputStream_->nextBytes(str, size);
+	nBytesRead_ += size;
 
 	return String(str, size);
 }
