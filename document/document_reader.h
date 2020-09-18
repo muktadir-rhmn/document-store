@@ -13,7 +13,6 @@ namespace document {
 
 class DocumentReader {
 public:
-	enum class FieldIdType { kInteger, kString};
 
 	virtual ~DocumentReader() = default;
 

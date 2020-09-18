@@ -6,14 +6,14 @@
 #define DOCUMENT_STORE_DR_DOCUMENT_WRITER_H
 
 #include "../document_writer.h"
+#include "../../utils/data/byte_output_stream.h"
 
 namespace document { namespace dr {
 
 class DRDocumentWriter : public document::DocumentWriter {
 public:
-//	explicit DRDocumentWriter(AllocatableOutputStream* outputStream, byte fieldIdType=-1);
-	explicit DRDocumentWriter(byte fieldIdType=-1);
-	~DRDocumentWriter();
+	explicit DRDocumentWriter(ByteOutputStream outputStream, FieldIdType fieldIdType=FieldIdType::kInteger);
+	explicit DRDocumentWriter(FieldIdType fieldIdType=FieldIdType::kInteger);
 
 	void appendInt32(void* fieldId, int32 value) override;
 
@@ -26,8 +26,8 @@ public:
 	AllocatableOutputStream* getOutputStream() override;
 
 private:
-	AllocatableOutputStream* outputStream_;
-	byte fieldIdType_;
+	ByteOutputStream outputStream_;
+	FieldIdType fieldIdType_;
 
 	int32 docSizeOffset_;
 

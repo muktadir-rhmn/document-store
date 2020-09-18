@@ -16,5 +16,7 @@ typedef int32_t arraySize_t;
 typedef int16_t fieldId_t;
 typedef int8_t fieldType_t;
 
+enum class FieldIdType { kInteger, kString};
+
 }
 #endif //DOCUMENT_STORE_DOCUMENT_TYPEDEFS_H
