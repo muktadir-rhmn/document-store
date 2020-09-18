@@ -16,9 +16,6 @@ public:
 	virtual bool hasMoreBytes() {
 		throw InternalException("hasMoreBytes() not implemented on this stream");
 	}
-	virtual void resetCursor() {
-		throw InternalException("resetCursor() not implemented on this stream");
-	}
 
 	byte nextByte(){
 		byte n;

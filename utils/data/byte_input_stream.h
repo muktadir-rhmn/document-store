@@ -25,6 +25,8 @@ public:
 
 	void skip(size_t bytes) override;
 
+	void resetCursor();
+
 private:
 	bool destroyBytes_;
 	byte* bytes_;

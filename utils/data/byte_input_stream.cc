@@ -61,3 +61,7 @@ byte* ByteInputStream::nextBytes(size_t nBytesToRead) {
 	return t;
 }
 
+void ByteInputStream::resetCursor() {
+	cursor_ = 0;
+}
+
