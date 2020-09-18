@@ -12,10 +12,11 @@
 
 namespace document { namespace  dr {
 
-class DRDocumentReader : public document::DocumentReader {
+class DRDocumentReader : public DocumentReader {
 public:
-	explicit DRDocumentReader(InputStream* inputStream, int fieldIdType = -1);
-	explicit DRDocumentReader(ByteInputStream inputStream, int fieldIdType = -1);
+
+	explicit DRDocumentReader(InputStream* inputStream, FieldIdType fieldIdType = FieldIdType::kInteger);
+	explicit DRDocumentReader(ByteInputStream inputStream, FieldIdType fieldIdType = FieldIdType::kInteger);
 	~DRDocumentReader() override;
 
 	bool next() override;
@@ -37,7 +38,7 @@ private:
 	docSize_t documentSize_;
 	docSize_t nBytesRead_;
 
-	int curFieldIdType_;
+	FieldIdType curFieldIdType_;
 	String curFieldName_;
 	fieldId_t curFieldId_=-1;
 

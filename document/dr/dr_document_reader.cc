@@ -5,14 +5,14 @@
 
 namespace document { namespace dr {
 
-DRDocumentReader::DRDocumentReader(InputStream* inputStream, int fieldIdType)
+DRDocumentReader::DRDocumentReader(InputStream* inputStream, FieldIdType fieldIdType)
 : inputStream_(extractRawData(inputStream), true) {
 	curFieldIdType_ = fieldIdType;
 	inputStream_.nextBytes(&documentSize_, sizeof(docSize_t));
 	nBytesRead_ = sizeof(docSize_t);
 }
 
-DRDocumentReader::DRDocumentReader(ByteInputStream inputStream, int fieldIdType) : inputStream_(inputStream) {
+DRDocumentReader::DRDocumentReader(ByteInputStream inputStream, FieldIdType fieldIdType) : inputStream_(inputStream) {
 	curFieldIdType_ = fieldIdType;
 	inputStream_.nextBytes(&documentSize_, sizeof(docSize_t));
 	nBytesRead_ = sizeof(docSize_t);
@@ -84,7 +84,7 @@ void DRDocumentReader::loadNextField() {
 }
 
 void DRDocumentReader::loadNextFieldId() {
-	if (curFieldIdType_ != -1) {
+	if (curFieldIdType_ == FieldIdType::kString) {
 		curFieldName_ = inputStream_.nextCString();
 
 		nBytesRead_ += curFieldName_.size() + 1;
