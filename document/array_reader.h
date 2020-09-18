@@ -12,6 +12,8 @@ namespace document{
 
 class ArrayReader {
 public:
+	virtual ~ArrayReader(){};
+
 	virtual bool next()=0; ///moves the cursor to the next position and return false if there is no element available to read
 
 	///current cursor reading logic

@@ -28,6 +28,7 @@ public:
 	virtual int64 curValueAsInt64()=0;
 	virtual String curValueAsString()=0;
 	virtual DocumentReader* curValueAsDocument()=0;
+	virtual ArrayReader* curValueAsArray()=0;
 
 };
 

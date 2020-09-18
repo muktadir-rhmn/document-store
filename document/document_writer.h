@@ -18,6 +18,7 @@ public:
 	virtual void appendCString(void* fieldId, ccstring value, stringSize_t strSize)=0;
 	virtual void appendCString(void* fieldId, ccstring value)=0;
 	virtual void appendDocument(void* fieldId, RawData& value)=0;
+	virtual void appendArray(void* fieldId, RawData& value)=0;
 };
 
 }

@@ -15,8 +15,6 @@ public:
 	virtual void appendInt64(int64 element)=0;
 	virtual void appendCString(ccstring element, stringSize_t size)=0;
 	virtual void appendCString(ccstring element)=0;
-
-	virtual AllocatableOutputStream* getOutputStream()=0;
 };
 
 }

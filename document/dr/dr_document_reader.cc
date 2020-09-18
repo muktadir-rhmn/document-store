@@ -1,6 +1,7 @@
 
 #include "dr_document_reader.h"
 #include "../../utils/debug/debug.h"
+#include "dr_array_reader.h"
 
 
 namespace document { namespace dr {
@@ -33,7 +34,7 @@ RawData DRDocumentReader::extractRawData(InputStream* inputStream) {
 }
 
 DRDocumentReader::~DRDocumentReader() {
-	delete lastDocumentValue_;
+	delete lastDocumentReader_;
 }
 
 bool DRDocumentReader::next() {
@@ -72,10 +73,18 @@ String DRDocumentReader::curValueAsString() {
 }
 
 DocumentReader* DRDocumentReader::curValueAsDocument() {
-	delete lastDocumentValue_;
+	delete lastDocumentReader_;
 
-	lastDocumentValue_ = new DRDocumentReader(ByteInputStream(curFieldValue_), curFieldIdType_);
-	return lastDocumentValue_;
+	//todo: allocate DocumentReaderStatically
+	lastDocumentReader_ = new DRDocumentReader(ByteInputStream(curFieldValue_), curFieldIdType_);
+	return lastDocumentReader_;
+}
+
+ArrayReader* DRDocumentReader::curValueAsArray() {
+	delete lastArrayReader_;
+
+	lastArrayReader_ = new DRArrayReader(curFieldValue_);
+	return lastArrayReader_;
 }
 
 void DRDocumentReader::loadNextField() {

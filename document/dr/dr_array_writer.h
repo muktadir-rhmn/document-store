@@ -7,12 +7,13 @@
 
 #include "../array_writer.h"
 #include "../document_typedefs.h"
+#include "../../utils/data/byte_output_stream.h"
 
 namespace document { namespace dr{
 
 class DRArrayWriter : public ArrayWriter{
 public:
-	explicit DRArrayWriter(AllocatableOutputStream* outputStream);
+	explicit DRArrayWriter(ByteOutputStream* outputStream);
 
 	void appendInt64(int64 element) override;
 
@@ -20,10 +21,8 @@ public:
 
 	void appendCString(ccstring element) override { appendCString(element, strlen(element)); }
 
-	AllocatableOutputStream* getOutputStream() override;
-
 private:
-	AllocatableOutputStream* outputStream_;
+	ByteOutputStream* outputStream_;
 	arraySize_t arraySizeOffset_;
 	arraySize_t arraySize_;
 

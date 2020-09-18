@@ -7,7 +7,7 @@
 
 namespace document { namespace dr {
 
-DRArrayWriter::DRArrayWriter(AllocatableOutputStream* outputStream) {
+DRArrayWriter::DRArrayWriter(ByteOutputStream* outputStream) {
 	outputStream_ = outputStream;
 
 	arraySizeOffset_ = outputStream_->allocate(sizeof(arraySize_t));
@@ -30,10 +30,6 @@ void DRArrayWriter::appendCString(ccstring element, stringSize_t size) {
 	arraySize_ += outputStream_->appendBytes(element, size);
 
 	updateArraySizeInStream();
-}
-
-AllocatableOutputStream* DRArrayWriter::getOutputStream() {
-	return outputStream_;
 }
 
 }}

@@ -21,7 +21,7 @@ void DRDocumentWriter::appendInt32(void* fieldId, int32 value) {
 	docSize_ += outputStream_->appendBytes(&FieldType.INT32, sizeof(fieldType_t));
 
 	docSize_ += outputStream_->appendInt32(value);
-	outputStream_->setAllocatedData(docSizeOffset_, sizeof(docSize_t), &docSize_);
+	updateDocumentSizeInStream();
 }
 
 void DRDocumentWriter::appendInt64(void* fieldId, int64 value) {
@@ -30,7 +30,7 @@ void DRDocumentWriter::appendInt64(void* fieldId, int64 value) {
 	docSize_ += outputStream_->appendBytes(&FieldType.INT64, sizeof(fieldType_t));
 
 	docSize_ += outputStream_->appendInt64(value);
-	outputStream_->setAllocatedData(docSizeOffset_, sizeof(docSize_t), &docSize_);
+	updateDocumentSizeInStream();
 }
 
 void DRDocumentWriter::appendCString(void* fieldId, ccstring value, stringSize_t strSize) {
@@ -41,7 +41,7 @@ void DRDocumentWriter::appendCString(void* fieldId, ccstring value, stringSize_t
 	if (strSize <= 0) strSize = strlen(value);
 	docSize_ += outputStream_->appendBytes(&strSize, sizeof(stringSize_t));
 	docSize_ += outputStream_->appendBytes(value, strSize); ///no null character
-	outputStream_->setAllocatedData(docSizeOffset_, sizeof(docSize_t), &docSize_);
+	updateDocumentSizeInStream();
 }
 
 void DRDocumentWriter::appendDocument(void* fieldId, RawData& rawData) {
@@ -51,7 +51,16 @@ void DRDocumentWriter::appendDocument(void* fieldId, RawData& rawData) {
 
 	docSize_ += outputStream_->appendBytes(rawData.bytes, rawData.size);
 
-	outputStream_->setAllocatedData(docSizeOffset_, sizeof(docSize_t), &docSize_);
+	updateDocumentSizeInStream();
+}
+
+void DRDocumentWriter::appendArray(void* fieldId, RawData& rawData) {
+	appendFieldId(fieldId);
+
+	docSize_ += outputStream_->appendBytes(&FieldType.ARRAY, sizeof(fieldType_t));
+	docSize_ += outputStream_->appendBytes(rawData.bytes, rawData.size);
+
+	updateDocumentSizeInStream();
 }
 
 void DRDocumentWriter::appendFieldId(void* fieldId) {
@@ -62,6 +71,7 @@ void DRDocumentWriter::appendFieldId(void* fieldId) {
 		fieldId_t id = *(fieldId_t *) fieldId;
 		docSize_ += outputStream_->appendBytes(&id, sizeof(fieldId_t));
 	}
-	outputStream_->setAllocatedData(docSizeOffset_, sizeof(docSize_t), &docSize_);
+	updateDocumentSizeInStream();
 }
+
 }}

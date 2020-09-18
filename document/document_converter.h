@@ -14,6 +14,7 @@
 #include "../utils/socket/buffered_input_stream.h"
 
 using document::DocumentReader;
+using document::ArrayReader;
 using document::dr::DRDocumentWriter;
 
 class DocumentConverter {
@@ -23,6 +24,9 @@ public:
 private:
 	static ByteOutputStream
 	replaceFieldNamesWithIds(DocumentReader& reader, FieldNameIDMap* fieldNameIDMap);
+
+	static ByteOutputStream
+	replaceFieldNamesWithIds(ArrayReader* arrayReader, FieldNameIDMap* fieldNameIDMap);
 };
 
 

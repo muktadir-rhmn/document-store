@@ -8,8 +8,8 @@
 
 namespace document{ namespace dr {
 
-DRArrayReader::DRArrayReader(InputStream* inputStream) {
-	inputStream_ = inputStream;
+DRArrayReader::DRArrayReader(RawData rawData) {
+	inputStream_ = new ByteInputStream(rawData);
 
 	inputStream_->nextBytes(&arraySize_, sizeof(arraySize_t));
 	nBytesRead_ += sizeof(arraySize_t);

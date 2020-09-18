@@ -33,6 +33,8 @@ public:
 
 	DocumentReader* curValueAsDocument() override;
 
+	ArrayReader* curValueAsArray() override;
+
 private:
 	ByteInputStream inputStream_;
 	docSize_t documentSize_;
@@ -45,7 +47,8 @@ private:
 	fieldType_t curFieldType_;
 	RawData curFieldValue_;
 
-	DRDocumentReader* lastDocumentValue_ = nullptr;
+	DRDocumentReader* lastDocumentReader_ = nullptr;
+	ArrayReader* lastArrayReader_ = nullptr;
 
 	///this function has the logic of how a field of a document is represented
 	void loadNextField();

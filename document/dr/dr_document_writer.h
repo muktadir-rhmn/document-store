@@ -24,6 +24,8 @@ public:
 
 	void appendDocument(void* fieldId, RawData& rawData) override;
 
+	void appendArray(void* fieldId, RawData& value) override;
+
 
 private:
 	ByteOutputStream* outputStream_;
@@ -33,6 +35,8 @@ private:
 	int32 docSizeOffset_;
 
 	inline void appendFieldId(void* fieldId);
+
+	void updateDocumentSizeInStream() {outputStream_->setAllocatedData(docSizeOffset_, sizeof(docSize_t), &docSize_);}
 };
 
 }}

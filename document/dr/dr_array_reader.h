@@ -6,12 +6,13 @@
 #define DOCUMENT_STORE_DR_ARRAY_READER_H
 
 #include "../array_reader.h"
+#include "../../utils/data/byte_input_stream.h"
 
 namespace document { namespace dr {
 
 class DRArrayReader : public ArrayReader {
 public:
-	explicit DRArrayReader(InputStream* inputStream);
+	DRArrayReader(RawData data);
 
 	bool next() override;
 
@@ -22,7 +23,7 @@ public:
 	String curValueAsString() override;
 
 private:
-	InputStream* inputStream_;
+	ByteInputStream* inputStream_;
 	arraySize_t arraySize_;
 	arraySize_t nBytesRead_;
 
