@@ -11,14 +11,18 @@
 #include "../storage_api/field_name_id_map.h"
 #include "dr/dr_document_writer.h"
 #include "dr/dr_document_reader.h"
+#include "../utils/socket/buffered_input_stream.h"
 
 using document::DocumentReader;
 using document::dr::DRDocumentWriter;
 
 class DocumentConverter {
 public:
-	static DRDocumentWriter replaceFieldNamesWithIds(DocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap);
+	static ByteOutputStream replaceFieldNamesWithIds(BufferedSocketInputStream* documentReader, FieldNameIDMap* fieldNameIdMap);
 
+private:
+	static ByteOutputStream
+	replaceFieldNamesWithIds(DocumentReader& reader, FieldNameIDMap* fieldNameIDMap);
 };
 
 

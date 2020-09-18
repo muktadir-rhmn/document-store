@@ -7,9 +7,16 @@
 #include "../utils/debug/debug.h"
 
 using document::FieldType;
+using document::dr::DRDocumentReader;
 
-DRDocumentWriter DocumentConverter::replaceFieldNamesWithIds(DocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap) {
-	DRDocumentWriter writer; //todo: for each embedded document, a new output stream is created, which is not necessary
+ByteOutputStream DocumentConverter::replaceFieldNamesWithIds(BufferedSocketInputStream* inputStream, FieldNameIDMap* fieldNameIdMap) {
+	DRDocumentReader documentReader(inputStream, document::FieldIdType::kString);
+	return replaceFieldNamesWithIds(documentReader, fieldNameIdMap);
+}
+
+ByteOutputStream DocumentConverter::replaceFieldNamesWithIds(DocumentReader& documentReader, FieldNameIDMap* fieldNameIdMap) {
+	ByteOutputStream byteOutputStream;
+	DRDocumentWriter writer(&byteOutputStream);
 
 	while (documentReader.next()) {
 		String fieldName = documentReader.curFieldIdAsCString();
@@ -33,10 +40,11 @@ DRDocumentWriter DocumentConverter::replaceFieldNamesWithIds(DocumentReader& doc
 			DEBUG_MSG("\n\tfield value: <Document> ");
 
 			DocumentReader* embeddedDocReader = documentReader.curValueAsDocument();
-			DRDocumentWriter embeddedDocWriter = replaceFieldNamesWithIds(*embeddedDocReader, fieldNameIdMap);
-			writer.appendDocument(&fieldId, embeddedDocWriter);
+
+			ByteOutputStream bot = replaceFieldNamesWithIds(*embeddedDocReader, fieldNameIdMap);
+			RawData rawData = bot.getRawData();
+			writer.appendDocument(&fieldId, rawData);
 		}
 	}
-
-	return writer;
+	return byteOutputStream;
 }

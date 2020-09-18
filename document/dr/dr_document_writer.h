@@ -10,24 +10,25 @@
 
 namespace document { namespace dr {
 
-class DRDocumentWriter : public document::DocumentWriter {
+class DRDocumentWriter : public DocumentWriter {
 public:
-	explicit DRDocumentWriter(ByteOutputStream outputStream, FieldIdType fieldIdType=FieldIdType::kInteger);
-	explicit DRDocumentWriter(FieldIdType fieldIdType=FieldIdType::kInteger);
+	explicit DRDocumentWriter(ByteOutputStream* outputStream, FieldIdType fieldIdType=FieldIdType::kInteger);
 
 	void appendInt32(void* fieldId, int32 value) override;
 
 	void appendInt64(void* fieldId, int64 value) override;
 
-	void appendCString(void* fieldId, ccstring value, stringSize_t strSize=-1) override;
+	void appendCString(void* fieldId, ccstring value, stringSize_t strSize) override;
 
-	void appendDocument(void* fieldId, DocumentWriter& value) override;
+	void appendCString(void* fieldId, ccstring value) override {appendCString(fieldId, value, strlen(value));};
 
-	AllocatableOutputStream* getOutputStream() override;
+	void appendDocument(void* fieldId, RawData& rawData) override;
+
 
 private:
-	ByteOutputStream outputStream_;
+	ByteOutputStream* outputStream_;
 	FieldIdType fieldIdType_;
+	docSize_t docSize_;
 
 	int32 docSizeOffset_;
 

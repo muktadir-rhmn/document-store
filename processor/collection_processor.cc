@@ -8,16 +8,15 @@
 #include "request_response_constants.h"
 #include "../utils/data/data_utils.h"
 
-using document::dr::DRDocumentReader;
+
 using document::dr::DRDocumentWriter;
 
 void CollectionProcessor::processInsertDocument(Database* database, ConnectionDescriptor *conDescriptor) {
     Collection* collection = CollectionProcessor::retrieveCollection(database, conDescriptor);
 
-    DRDocumentReader reader(conDescriptor->getInputStream(), document::FieldIdType::kString);
-    DRDocumentWriter doc = DocumentConverter::replaceFieldNamesWithIds(reader, collection->getFieldNameIdMap());
-	AllocatableOutputStream* outputStream = doc.getOutputStream();
-	RawData rawData = outputStream->getRawData();
+    ByteOutputStream outputStream = DocumentConverter::replaceFieldNamesWithIds(conDescriptor->getInputStream(), collection->getFieldNameIdMap());
+    RawData rawData = outputStream.getRawData();
+
 	collection->insertDocument(rawData);
 
 	DataUtils::print(rawData.bytes, rawData.size);

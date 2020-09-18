@@ -14,6 +14,7 @@ class ByteOutputStream : public AllocatableOutputStream{
 public:
 	explicit ByteOutputStream();
 	explicit ByteOutputStream(size_t initialCapacity);
+	ByteOutputStream(const ByteOutputStream& byteOutputStream);
 	~ByteOutputStream() override;
 
 	int appendBytes(const void* value, size_t size) override;
@@ -27,6 +28,7 @@ public:
 private:
 	static const int DEFAULT_CAPACITY = 2;
 
+	bool destroyBytes_;
 	byte* bytes_;
 	size_t cursor_;
 	size_t cap_;

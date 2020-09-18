@@ -8,12 +8,20 @@ ByteOutputStream::ByteOutputStream() {
 	initWithCapacity(ByteOutputStream::DEFAULT_CAPACITY);
 }
 
+ByteOutputStream::ByteOutputStream(const ByteOutputStream& byteOutputStream) {
+	destroyBytes_ = false;
+	bytes_ = byteOutputStream.bytes_;
+	cursor_ = byteOutputStream.cursor_;
+	cap_ = byteOutputStream.cap_;
+	size_ = byteOutputStream.size_;
+}
+
 ByteOutputStream::ByteOutputStream(size_t initialCapacity) {
 	initWithCapacity(initialCapacity);
 }
 
 ByteOutputStream::~ByteOutputStream() {
-	delete [] bytes_;
+	if (destroyBytes_) delete [] bytes_;
 }
 
 void ByteOutputStream::initWithCapacity(size_t cap) {
@@ -21,6 +29,7 @@ void ByteOutputStream::initWithCapacity(size_t cap) {
 	size_ = 0;
 	cap_ = cap;
 	bytes_ = new byte[cap_];
+	destroyBytes_ = true;
 }
 
 int ByteOutputStream::appendBytes(const void* value, size_t size) {
