@@ -11,7 +11,7 @@ using document::FieldType;
 using document::dr::DRArrayWriter;
 using document::dr::DRDocumentReader;
 
-ByteOutputStream DocumentConverter::replaceFieldNamesWithIds(BufferedSocketInputStream* inputStream, FieldNameIDMap* fieldNameIdMap) {
+ByteOutputStream DocumentConverter::replaceFieldNamesWithIds(InputStream* inputStream, FieldNameIDMap* fieldNameIdMap) {
 	DRDocumentReader documentReader(inputStream, document::FieldIdType::kString);
 	return replaceFieldNamesWithIds(documentReader, fieldNameIdMap);
 }

@@ -19,7 +19,7 @@ using document::dr::DRDocumentWriter;
 
 class DocumentConverter {
 public:
-	static ByteOutputStream replaceFieldNamesWithIds(BufferedSocketInputStream* documentReader, FieldNameIDMap* fieldNameIdMap);
+	static ByteOutputStream replaceFieldNamesWithIds(InputStream* documentReader, FieldNameIDMap* fieldNameIdMap);
 
 private:
 	static ByteOutputStream
