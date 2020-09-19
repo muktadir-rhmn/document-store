@@ -3,6 +3,8 @@
 //
 
 #include "gtest/gtest.h"
+#include "../dr/dr_array_writer.h"
+#include "../dr/dr_array_reader.h"
 #include "../dr/dr_document_writer.h"
 #include "../dr/dr_document_reader.h"
 #include "../../utils/data/data_utils.h"
@@ -10,6 +12,8 @@
 namespace document {
 using dr::DRDocumentWriter;
 using dr::DRDocumentReader;
+using dr::DRArrayReader;
+using dr::DRArrayWriter;
 
 TEST(DRDocumentWriterReaderTest, StringId_FlatDocument) {
 	ByteOutputStream byteOutputStream;
@@ -89,6 +93,10 @@ TEST(DRDocumentWriterReaderTest, StringId_EmbeddedDocument) {
 	ASSERT_EQ(yetEmbeddedReader->next(), true);
 	ASSERT_EQ(String(yetEmbeddedReader->curFieldIdAsCString()), String("name"));
 	ASSERT_EQ(String(yetEmbeddedReader->curValueAsString()), String("muktadir"));
+}
+
+TEST(DRDocumentWriterReaderTest, StringId_Array) {
+
 }
 
 }
