@@ -19,7 +19,7 @@ public:
 	explicit DRDocumentReader(ByteInputStream inputStream, FieldIdType fieldIdType = FieldIdType::kInteger);
 	~DRDocumentReader() override;
 
-	bool next() override;
+	bool next() override; //todo: handle the case: id and values are accessed before next() is called
 
 	ccstring curFieldIdAsCString() override;
 

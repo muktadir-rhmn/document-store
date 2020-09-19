@@ -54,8 +54,9 @@ int ByteOutputStream::allocate(size_t nBytes) {
 }
 
 void ByteOutputStream::ensureSpace(size_t size) {
-	if (size + size_ > cap_) {
-		size_t tmpCap = cap_ << 1;
+	size_t finalSize = size + size_;
+	if (finalSize > cap_) {
+		size_t tmpCap = finalSize << 1;
 		auto tmpBytes = new byte[tmpCap];
 
 		DEBUG_MSG("PrefixLengthRawData: need more space. So, increasing capacity from " << cap_ << " to " << tmpCap);

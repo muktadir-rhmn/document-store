@@ -10,6 +10,6 @@ target_link_libraries(document_store LINK_PUBLIC ${WIREDTIGER})
 # Google Test
 add_subdirectory(third_parties/gtest)
 include_directories(third_parties/gtest/googletest/include)
-add_executable(Google_Tests_run document/test/TestDocument.cc)
+add_executable(Google_Tests_run document/test/TestDocument.cc utils/data/byte_input_stream.cc utils/data/byte_output_stream.cc document/dr/dr_document_writer.cc document/dr/dr_document_reader.cc utils/data/data_utils.cc utils/exceptions/exception.cc document/dr/dr_array_reader.cc document/dr/dr_array_writer.cc )
 target_link_libraries(Google_Tests_run gtest gtest_main)
 
